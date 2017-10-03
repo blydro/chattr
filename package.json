@@ -19,6 +19,10 @@
     "eject": "react-scripts eject"
   },
   "xo": {
-    "extends": "xo-react"
+    "extends": "xo-react",
+    "envs": ["browser", "node"],
+    "rules": {
+      "unicorn/filename-case": ["off", {"case": "pascalCase"}]
+    }
   }
 }
