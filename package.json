@@ -1,19 +1,24 @@
 {
   "name": "decentralized-chat",
-  "version": "0.0.1",
-  "description": "",
-  "main": "index.js",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0"
+  },
+  "devDependencies": {
+    "eslint-config-xo-react": "^0.13.0",
+    "eslint-plugin-react": "^7.4.0",
+    "react-scripts": "1.0.14",
+    "xo": "^0.18.2"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/blydro/decentralized-chat.git"
-  },
-  "author": "blydro",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/blydro/decentralized-chat/issues"
-  },
-  "homepage": "https://github.com/blydro/decentralized-chat#readme"
+  "xo": {
+    "extends": "xo-react"
+  }
 }
