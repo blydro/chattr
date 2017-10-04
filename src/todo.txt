@@ -1,0 +1,3 @@
+- helper functions (send), recieve --> make it integrate into props
+- move all socket stuff to another file
+- dispaly info prettily
