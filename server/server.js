@@ -1,17 +1,31 @@
 const server = require('http').createServer();
 const io = require('socket.io')(server);
-const p2p = require('socket.io-p2p-server').Server;
 
-io.use(p2p);
+const nodes = [];
+
 server.listen(3030);
-
-console.log('ready on 3030');
+console.log('listening on 3030');
 
 io.on('connection', socket => {
-	console.log('Mew connection from peer %s', socket.id);
+	console.log('%s user connected', socket.id);
+	let index = null;
 
-	socket.on('peer-msg', data => {
-		console.log('Message from peer %s: %s', socket.id, data);
-		socket.broadcast.emit('peer-msg', data);
+	socket.on('getNodes', () => {
+		socket.emit('nodes', nodes);
+	});
+
+	socket.on('newNode', node => {
+		index = nodes.push(node);
+		console.log(nodes, index);
+	});
+
+	socket.on('signal', signal => {
+		console.log('new signal: ', signal);
+		socket.broadcast.emit('signal', signal);
+	});
+
+	socket.on('disconnect', () => {
+		nodes.pop(index);
+		console.log(nodes, index);
 	});
 });
