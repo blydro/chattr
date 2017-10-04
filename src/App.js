@@ -3,41 +3,44 @@ import io from 'socket.io-client';
 import Peer from 'simple-peer';
 
 const socket = io('http://192.168.2.100:3030');
-let p;
 
-socket.emit('getNodes');
+const peers = {};
 
-socket.on('nodes', nodes => {
-	p = new Peer({initiator: nodes.length === 1, trickle: true});
-	console.log(p, nodes);
-	socket.emit('newNode', p._id);
+socket.on('connect', () => {
+	console.log('Connected to signalling server, Peer ID: %s', socket.id);
+});
 
-	if (nodes.length > 0) {
-		nodes.map(node => {
-			console.log(node);
-				// P.signal(node);
-			return node;
-		});
-	}
+socket.on('peer', data => {
+	const peerId = data.peerId;
+	const peer = new Peer({initiator: data.initiator, trickle: false});
 
-		// When we get a signal, send it over the WebSocket to the server
-	p.on('signal', data => socket.emit('signal', data));
+	console.log('Peer available for connection discovered from signalling server, Peer ID: %s', peerId);
 
-		// WebRTC connection is successful!
-	p.on('connect', () => {
-		console.log('connected');
-	});
-
-	p.on('data', data => {
-		console.log(data);
-		const decoded = JSON.parse(new TextDecoder('utf-8').decode(data));
-		console.log('got data!!!!!', decoded);
-	});
-
-		// When we get a signal over the WebSocket from the server, signal the WebRTC connection
 	socket.on('signal', data => {
-		p.signal(data);
+		if (data.peerId === peerId) {
+			console.log('Received signalling data', data, 'from Peer ID:', peerId);
+			peer.signal(data.signal);
+		}
 	});
+
+	peer.on('signal', data => {
+		console.log('Advertising signalling data', data, 'to Peer ID:', peerId);
+		socket.emit('signal', {
+			signal: data,
+			peerId
+		});
+	});
+	peer.on('error', e => {
+		console.log('Error sending connection to peer %s:', peerId, e);
+	});
+	peer.on('connect', () => {
+		console.log('Peer connection established');
+		peer.send('hey peer');
+	});
+	peer.on('data', data => {
+		console.log('Recieved data from peer:', data);
+	});
+	peers[peerId] = peer;
 });
 
 class App extends Component {
@@ -51,7 +54,7 @@ class App extends Component {
 				<p className="App-intro">
 					To get started, edit <code>src/App.js</code> and save to reload.
 				</p>
-				<button onClick={() => p.send(JSON.stringify({best: 'me'}))}>foo bar</button>
+				<button onClick={() => console.log(peers)}>foo bar</button>
 			</div>
 		);
 	}
