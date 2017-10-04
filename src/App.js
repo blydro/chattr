@@ -2,42 +2,44 @@ import React, {Component} from 'react';
 import io from 'socket.io-client';
 import Socketiop2p from 'socket.io-p2p';
 
-const socket = io('http://localhost:3030');
-const opts = {peerOpts: {trickle: true}, autoUpgrade: true};
+const socket = io('http://192.168.2.100:3030');
+const opts = {autoUpgrade: true};
 const p2p = new Socketiop2p(socket, opts, () => {
 	p2p.emit('peer-msg', 'Hello there. I am ' + p2p.peerId);
 });
 
-p2p.useSockets = false;
-p2p.usePeerConnection = true;
+// P2p.useSockets = false;
+// p2p.usePeerConnection = true
 
 p2p.on('peer-msg', data => {
-	console.log('holy hell i got something ' + data);
+	console.log('holy hell i got somesthing ' + data);
 });
 
-function onUpgrade(cb) {
-	p2p.on('upgrade', data => cb(null, data));
-}
+p2p.on('ready', () => {
+	p2p.usePeerConnection = true;
+});
+
+p2p.on('upgrade', () => {
+	console.log('upgradeeeeedddd');
+	p2p.useSockets = false;
+});
+
+p2p.on('peer-error', data => {
+	console.warn('error', data);
+});
 
 class App extends Component {
 
-	constructor() {
-		super();
-
-		onUpgrade((err, data) => this.setState({
-			data
-		}));
-	}
-
 	sendMessage(event) {
 		event.preventDefault();
-		// P2p.useSockets = false;
-		// p2p.usePeerConnection = true;
+
 		p2p.emit('peer-msg', this.message.value);
 	}
 
 	killServer() {
 		console.log(p2p);
+		p2p.usePeerConnection = true;
+		p2p.useSockets = false;
 	}
 
 	render() {
@@ -56,7 +58,7 @@ class App extends Component {
 					<button type="submit">Send</button>
 				</form>
 
-				<button onClick={() => this.killServer()}>Kill the server</button>
+				<button onClick={() => this.killServer()}>server</button>
 			</div>
 		);
 	}
