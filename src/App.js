@@ -3,7 +3,7 @@ import io from 'socket.io-client';
 import Socketiop2p from 'socket.io-p2p';
 
 const socket = io('http://192.168.2.100:3030');
-const opts = {autoUpgrade: true};
+const opts = {autoUpgrade: true, numClients: 10};
 const p2p = new Socketiop2p(socket, opts, () => {
 	p2p.emit('peer-msg', 'Hello there. I am ' + p2p.peerId);
 });
@@ -59,6 +59,8 @@ class App extends Component {
 				</form>
 
 				<button onClick={() => this.killServer()}>server</button>
+
+
 			</div>
 		);
 	}
