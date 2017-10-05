@@ -2,29 +2,31 @@ import React, {Component} from 'react';
 import io from 'socket.io-client';
 import Peer from 'simple-peer';
 
-const peers = {};
-const socket = io('http://192.168.2.100:3030');
+import LogItem from './components/LogItem';
 
-function setupPeers(cb) {
+const peers = {};
+const socket = io('http://localhost:3030');
+
+function setupPeers(cb, logger) {
 	socket.on('connect', () => {
-		console.log('Connected to signalling server, Peer ID: %s', socket.id);
+		logger('Connected to signalling server, Peer ID: '+ socket.id);
 	});
 
 	socket.on('peer', data => {
 		const peerId = data.peerId;
 		const peer = new Peer({initiator: data.initiator, trickle: false});
 
-		console.log('Peer available for connection discovered from signalling server, Peer ID: %s', peerId);
+		logger('Peer available for connection discovered from signalling server, Peer ID: '+ peerId);
 
 		socket.on('signal', data => {
 			if (data.peerId === peerId) {
-				console.log('Received signalling data', data, 'from Peer ID:', peerId);
+				logger('Received signalling data', data, 'from Peer ID:'+ peerId);
 				peer.signal(data.signal);
 			}
 		});
 
 		peer.on('signal', data => {
-			console.log('Advertising signalling data', data, 'to Peer ID:', peerId);
+			logger('Advertising signalling data', data, 'to Peer ID:'+ peerId);
 			socket.emit('signal', {
 				signal: data,
 				peerId
@@ -34,11 +36,11 @@ function setupPeers(cb) {
 			console.log('Error sending connection to peer %s:', peerId, e);
 		});
 		peer.on('connect', () => {
-			console.log('Peer connection established');
+			logger('Peer connection established');
 			// Peer.send('hey peer');
 		});
 		peer.on('data', data => {
-			console.log('Recieved data from peer:', data);
+			logger('Recieved data from peer:'+ data);
 			cb(data);
 		});
 		peers[peerId] = peer;
@@ -47,16 +49,34 @@ function setupPeers(cb) {
 
 class App extends Component {
 
+	logger = (message) => {
+		const log = this.state.log;
+		log.push(message);
+
+		this.setState({
+			log
+		});
+	}
+
 	constructor() {
 		super();
 
 		setupPeers(data => {
 			const decoded = new TextDecoder('utf-8').decode(data);
 			console.log('from construcotr: ', decoded);
+			this.logger('New message! ' + decoded);
+		}, this.logger);
+	}
+
+	componentWillMount() {
+		this.setState({
+			log: ['Log Initialized'] // Make this an object some day
 		});
 	}
 
 	massTextBootyCall() {
+		this.logger('mass texting');
+
 		Object.keys(peers).map(peer => {
 			peers[peer].send('p2p data!~!!!!!!1');
 			return peer; // For xo --> delete!
@@ -64,6 +84,10 @@ class App extends Component {
 	}
 
 	render() {
+		const logItems = this.state.log.map((item, index) => {
+			return <LogItem key={index} text={item}/>;
+		});
+
 		return (
 			<div className="App">
 				<header className="App-header">
@@ -73,6 +97,9 @@ class App extends Component {
 					To get started, edit <code>src/App.js</code> and save to reload.
 				</p>
 				<button onClick={() => this.massTextBootyCall()}>foo bar</button>
+				<ul>
+					{logItems}
+				</ul>
 			</div>
 		);
 	}
