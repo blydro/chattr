@@ -56,8 +56,6 @@ function massSend(peers, message) {
 
 class App extends Component {
 
-
-
 	constructor() {
 		super();
 
