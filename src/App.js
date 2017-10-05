@@ -48,9 +48,9 @@ function setupPeers(cb, logger) {
 }
 
 function massSend(peers, message) {
+	// eslint-disable-next-line
 	Object.keys(peers).map(peer => {
 		peers[peer].send(message);
-
 	});
 }
 
@@ -84,9 +84,9 @@ class App extends Component {
 	}
 
 	massTextBootyCall() {
-		this.logger('mass texting');
+		this.logger('mass texting ', this.message.value);
 
-		massSend(peers, 'p2p data!~!!!!!!1');
+		massSend(peers, this.message.value);
 	}
 
 	render() {
@@ -97,12 +97,12 @@ class App extends Component {
 		return (
 			<div className="App">
 				<header className="App-header">
-					<h1 className="App-title">Welcome to React</h1>
+					<h1 className="App-title">Welcome to <span className="fancy">Chattr</span></h1>
 				</header>
 				<p className="App-intro">
-					<input /> {/*THIS NEEDS TO BE PROPERLY IMPLEMENTED */}
+					<input ref={(input) => this.message = input}/>
 				</p>
-				<button onClick={() => this.massTextBootyCall()}>foo bar</button>
+				<button onClick={() => this.massTextBootyCall()}>mass text</button>
 				<ul>
 					{logItems}
 				</ul>
