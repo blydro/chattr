@@ -47,6 +47,13 @@ function setupPeers(cb, logger) {
 	});
 }
 
+function massSend(peers, message) {
+	Object.keys(peers).map(peer => {
+		peers[peer].send(message);
+
+	});
+}
+
 class App extends Component {
 
 
@@ -79,10 +86,7 @@ class App extends Component {
 	massTextBootyCall() {
 		this.logger('mass texting');
 
-		Object.keys(peers).map(peer => {
-			peers[peer].send('p2p data!~!!!!!!1');
-			return peer; // For xo --> delete!
-		});
+		massSend(peers, 'p2p data!~!!!!!!1');
 	}
 
 	render() {
