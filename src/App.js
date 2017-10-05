@@ -49,14 +49,7 @@ function setupPeers(cb, logger) {
 
 class App extends Component {
 
-	logger = (message) => {
-		const log = this.state.log;
-		log.push(message);
 
-		this.setState({
-			log
-		});
-	}
 
 	constructor() {
 		super();
@@ -66,6 +59,15 @@ class App extends Component {
 			console.log('from construcotr: ', decoded);
 			this.logger('New message! ' + decoded);
 		}, this.logger);
+	}
+
+	logger = (message) => {
+		const log = this.state.log;
+		log.push(message);
+
+		this.setState({
+			log
+		});
 	}
 
 	componentWillMount() {
@@ -94,7 +96,7 @@ class App extends Component {
 					<h1 className="App-title">Welcome to React</h1>
 				</header>
 				<p className="App-intro">
-					To get started, edit <code>src/App.js</code> and save to reload.
+					<input /> {/*THIS NEEDS TO BE PROPERLY IMPLEMENTED */}
 				</p>
 				<button onClick={() => this.massTextBootyCall()}>foo bar</button>
 				<ul>
