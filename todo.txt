@@ -1,3 +1,5 @@
 - helper functions (send), recieve --> make it integrate into props
 - move all socket stuff to another file
+  - make socket stuff object based --> (automate stringify etc)
 - dispaly info prettily
+- ip address in env!
