@@ -1,6 +1,6 @@
 const server = require('http').createServer();
 const _ = require('lodash');
-const io = require('socket.io')(server);
+const io = require('socket.io')(server, {origins: '*:*'});
 
 io.origins('*:*');
 
