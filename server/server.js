@@ -2,7 +2,7 @@ const server = require('http').createServer();
 const _ = require('lodash');
 const io = require('socket.io')(server);
 
-io.set.origins('*:*');
+io.origins('*:*');
 
 io.on('connection', socket => {
 	console.log('Connection with ID:', socket.id);
