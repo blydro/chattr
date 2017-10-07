@@ -26,7 +26,7 @@ class App extends Component {
 
 	componentWillMount() {
 		this.setState({
-			log: ['Log Initialized'] // Make this an object some day
+			log: ['Log Initialized', 'Served from ' + window.location.hostname] // Make this an object some day
 		});
 	}
 

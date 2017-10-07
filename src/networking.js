@@ -5,7 +5,7 @@ const peers = {};
 
 const ioId = 'https://blydro-socketio-server.now.sh';
 // Const socket = io(ioId);
-const socket = io();
+const socket = io(window.location.hostname + ':3030');
 
 function setupPeers(cb, logger) {
 	socket.on('connect', () => {
