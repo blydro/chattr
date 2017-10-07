@@ -47,6 +47,7 @@ function setupPeers(cb, logger) {
 }
 
 function massSend(message) {
+	// eslint-disable-next-line
 	Object.keys(peers).map(peer => {
 		peers[peer].send(message);
 	});

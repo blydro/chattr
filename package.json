@@ -25,6 +25,9 @@
     "eject": "react-scripts eject",
     "server": "node server/server.js"
   },
+  "now": {
+    "alias": "blydro-socketio-server"
+  },
   "xo": {
     "extends": "xo-react",
     "envs": [
