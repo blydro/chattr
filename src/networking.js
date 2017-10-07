@@ -3,9 +3,9 @@ import Peer from 'simple-peer';
 
 const peers = {};
 
-const ioId = 'localhost:3030';
-// Const ioId = 'https://blydro-socketio-server.now.sh';
-const socket = io(ioId);
+const ioId = 'https://blydro-socketio-server.now.sh';
+// Const socket = io(ioId);
+const socket = io();
 
 function setupPeers(cb, logger) {
 	socket.on('connect', () => {
