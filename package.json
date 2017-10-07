@@ -19,6 +19,7 @@
   "scripts": {
     "start": "react-scripts start",
     "now-start": "node server/server.js",
+    "now-build": "echo no",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
