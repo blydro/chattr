@@ -3,7 +3,7 @@ import Peer from 'simple-peer';
 
 const peers = {};
 
-const ioId = process.env.IOID || 'http://localhost:3030';
+const ioId = process.env.IOID || 'http://decentralized-chat-jccifvkhpk.now.sh/';
 const socket = io(ioId);
 
 function setupPeers(cb, logger) {
