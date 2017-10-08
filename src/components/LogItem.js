@@ -5,12 +5,11 @@ import Time from 'react-time';
 
 class LogItem extends React.Component {
 
-/* From https://stackoverflow.com/questions/39426083/update-component-every-second-react to enforce
-		time to update!
-		*/
+/* From https://stackoverflow.com/questions/39426083/update-component-every-second-react
+to enforce Time to update! */
 
 	componentDidMount() {
-		this.interval = setInterval(() => this.setState({time: Date.now()}), 1000);
+		this.interval = setInterval(() => this.setState({time: Date.now()}), 5000);
 	}
 	componentWillUnmount() {
 		clearInterval(this.interval);
@@ -18,7 +17,7 @@ class LogItem extends React.Component {
 
 	render() {
 		return (
-			<li className="list-item">
+			<li className={this.props.msg.type}>
 				<Time value={this.props.msg.timestamp} relative/>: {this.props.msg.msg}
 			</li>
 		);

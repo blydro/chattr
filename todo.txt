@@ -1,5 +1,4 @@
-- helper functions (send), recieve --> make it integrate into props
-- move all socket stuff to another file
-  - make socket stuff object based --> (automate stringify etc)
+- send messages as objects --> timestamp etc
+- show peers online! (and add relevant logic)
+- show who sender is
 - dispaly info prettily
-- ip address in env!
