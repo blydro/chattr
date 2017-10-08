@@ -3,7 +3,7 @@ import Peer from 'simple-peer';
 
 const peers = {};
 
-const ioId = 'https://blydro-socketio-server.now.sh';
+// Const ioId = 'https://blydro-socketio-server.now.sh';
 // Const socket = io(ioId);
 const socket = io(window.location.hostname + ':3030');
 
@@ -48,7 +48,7 @@ function setupPeers(cb, logger) {
 }
 
 function massSend(message) {
-	// eslint-disable-next-line
+	// eslint-disable-next-line array-callback-return
 	Object.keys(peers).map(peer => {
 		peers[peer].send(message);
 	});

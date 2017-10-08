@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 
-import {setupPeers, massSend} from './networking'
+import {setupPeers, massSend} from './networking';
 import LogItem from './components/LogItem';
 
 class App extends Component {
@@ -15,8 +15,14 @@ class App extends Component {
 		}, this.logger);
 	}
 
-	logger = (message) => {
+	logger(text) {
 		const log = this.state.log;
+		const message = {
+			timestamp: Date.now(),
+			type: 'log',
+			msg: text
+		};
+
 		log.push(message);
 
 		this.setState({
@@ -24,21 +30,35 @@ class App extends Component {
 		});
 	}
 
-	componentWillMount() {
+	addMessage(message) {
+		const log = this.state.log;
+
+		log.push(message);
 		this.setState({
-			log: ['Log Initialized', 'Served from ' + window.location.hostname] // Make this an object some day
+			log
 		});
 	}
 
+	componentWillMount() {
+		this.setState({
+			log: [] // Make this an object some day
+		});
+	}
+
+	componentDidMount() {
+		this.logger('Log Initialized');
+		this.logger('Served from ' + window.location.hostname);
+	}
+
 	massTextBootyCall() {
-		this.logger('mass texting '+ this.message.value);
+		this.logger('mass texting ' + this.message.value);
 
 		massSend(this.message.value);
 	}
 
 	render() {
-		const logItems = this.state.log.map((item, index) => {
-			return <LogItem key={index} text={item}/>;
+		const logItems = this.state.log.map(item => {
+			return <LogItem key={item.timestamp} text={item.msg}/>;
 		});
 
 		return (
@@ -47,7 +67,7 @@ class App extends Component {
 					<h1 className="App-title">Welcome to <span className="fancy">Chattr</span></h1>
 				</header>
 				<p className="App-intro">
-					<input ref={(input) => this.message = input}/>
+					<input ref={input => this.message = input}/>
 				</p>
 				<button onClick={() => this.massTextBootyCall()}>mass text</button>
 				<ul>
