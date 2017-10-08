@@ -33,6 +33,8 @@
   },
   "xo": {
     "extends": "xo-react",
+    "parser": "babel-eslint",
+    "esnext": true,
     "envs": [
       "browser",
       "node"

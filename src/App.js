@@ -15,7 +15,8 @@ class App extends Component {
 		}, this.logger);
 	}
 
-	logger = (text) => {
+	// eslint-disable-next-line no-undef
+	logger = text => {
 		const log = this.state.log;
 		const message = {
 			timestamp: Date.now() - performance.now() + performance.now(), // This is kind of nasty but it enforces unique strings
