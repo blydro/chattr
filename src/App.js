@@ -58,7 +58,7 @@ class App extends Component {
 
 	render() {
 		const logItems = this.state.log.map(item => {
-			return <LogItem key={item.timestamp} text={item.msg}/>;
+			return <LogItem key={item.timestamp} msg={item}/>;
 		});
 
 		return (
