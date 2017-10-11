@@ -31,7 +31,8 @@ class App extends Component {
 		});
 	}
 
-	addMessage(message) {
+	// eslint-disable-next-line no-undef
+	addMessage = (message) => {
 		const log = this.state.log;
 
 		log.push(message);
