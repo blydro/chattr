@@ -11,9 +11,11 @@ class App extends Component {
 		setupPeers(data => {
 			let decoded = new TextDecoder('utf-8').decode(data);
 			decoded = JSON.parse(decoded);
-			console.log('from construcotr: ', decoded);
 			this.handleIncoming(decoded);
-		}, this.logger);
+		}, this.logger, () => {
+			// Console.log(peer);
+			// TODO: send entire name database here
+		});
 	}
 
 	handleIncoming(message) {
@@ -71,7 +73,8 @@ class App extends Component {
 	componentWillMount() {
 		this.setState({
 			log: [],
-			names: {}
+			names: {},
+			myName: undefined
 		});
 	}
 
@@ -93,6 +96,9 @@ class App extends Component {
 
 	sayMyNameSayMyName() {
 		this.logger('my name is now ' + this.message.value);
+		this.setState({
+			myName: this.message.value
+		});
 
 		massSend({type: 'setName', newName: this.message.value});
 	}

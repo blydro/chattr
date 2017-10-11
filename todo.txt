@@ -2,4 +2,8 @@
 - show who sender is
 - dispaly info prettily
 - make handleIncoming an independent function (merge all the functions it calls)
-- 
+- refactor logitem to display infomration more coherenty --> act depending on message type! don't rely on props
+- fix 0 peer bug (better peer logic)
+
+- refactor setupPeers
+- refactor name setup: should be in props not state!!!!

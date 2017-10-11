@@ -7,7 +7,7 @@ const peers = {};
 // Const socket = io(ioId);
 const socket = io(window.location.hostname + ':3030');
 
-function setupPeers(cb, logger) {
+function setupPeers(dataCallback, logger, connectCallback) {
 	socket.on('connect', () => {
 		logger('Connected to signalling server, Peer ID: ' + socket.id);
 	});
@@ -36,12 +36,17 @@ function setupPeers(cb, logger) {
 			console.log('Error sending connection to peer %s:', peerId, e);
 		});
 		peer.on('connect', () => {
-			logger('Peer connection established');
+			logger('Peer connection established with ' + peerId);
+			connectCallback(peer);
 			// Peer.send('hey peer');
 		});
+		peer.on('close', () => {
+			logger('Peer ' + peerId + 'disconneted');
+			delete peers[peer];
+		});
 		peer.on('data', data => {
-			console.log('Recieved data from peer:', data);
-			cb(data);
+			// Console.log('Recieved data from peer:', data);
+			dataCallback(data);
 		});
 		peers[peerId] = peer;
 	});
@@ -51,8 +56,18 @@ function massSend(msg) {
 	msg.sender = socket.id;
 	// eslint-disable-next-line array-callback-return
 	Object.keys(peers).map(peer => {
-		peers[peer].send(JSON.stringify(msg));
+		singleSend(peer, msg);
 	});
+}
+
+function singleSend(peer, msg) {
+	if (peers[peer]._channel.readyState === 'open') {
+		peers[peer].send(JSON.stringify(msg));
+	} else {
+		console.log('peer %s not open. retrying...', peer);
+		console.log(peers);
+		setTimeout(singleSend(peer, msg), 1000);
+	}
 }
 
 export {setupPeers, massSend};
