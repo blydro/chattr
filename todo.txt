@@ -1,4 +1,5 @@
-- send messages as objects --> timestamp etc
 - show peers online! (and add relevant logic)
 - show who sender is
 - dispaly info prettily
+- make handleIncoming an independent function (merge all the functions it calls)
+- 

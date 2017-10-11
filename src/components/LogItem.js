@@ -18,14 +18,15 @@ to enforce Time to update! */
 	render() {
 		return (
 			<li className={this.props.msg.type}>
-				<Time value={this.props.msg.timestamp} relative/>: {this.props.msg.msg}
+				<Time value={this.props.msg.timestamp} relative/> from {this.props.sender || this.props.msg.sender || 'me'}: {this.props.msg.msg}
 			</li>
 		);
 	}
 }
 
 LogItem.propTypes = {
-	msg: PropTypes.object.isRequired
+	msg: PropTypes.object.isRequired,
+	sender: PropTypes.string
 };
 
 export default LogItem;

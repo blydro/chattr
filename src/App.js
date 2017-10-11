@@ -9,10 +9,27 @@ class App extends Component {
 		super();
 
 		setupPeers(data => {
-			const decoded = new TextDecoder('utf-8').decode(data);
+			let decoded = new TextDecoder('utf-8').decode(data);
+			decoded = JSON.parse(decoded);
 			console.log('from construcotr: ', decoded);
-			this.logger('New message! ' + decoded);
+			this.handleIncoming(decoded);
 		}, this.logger);
+	}
+
+	handleIncoming(message) {
+		switch (message.type) {
+			case 'log':
+				this.logger('log msg: ', message.msg);
+				break;
+			case 'message':
+				this.addMessage(message);
+				break;
+			case 'setName':
+				this.newName(message);
+				break;
+			default:
+				this.logger('recieved data without type: ', message);
+		}
 	}
 
 	// eslint-disable-next-line no-undef
@@ -32,7 +49,7 @@ class App extends Component {
 	}
 
 	// eslint-disable-next-line no-undef
-	addMessage = (message) => {
+	addMessage = message => {
 		const log = this.state.log;
 
 		log.push(message);
@@ -41,9 +58,20 @@ class App extends Component {
 		});
 	}
 
+	// eslint-disable-next-line no-undef
+	newName = message => {
+		const names = this.state.names;
+
+		names[message.sender] = message.newName;
+		this.setState({
+			names
+		});
+	}
+
 	componentWillMount() {
 		this.setState({
-			log: [] // Make this an object some day
+			log: [],
+			names: {}
 		});
 	}
 
@@ -54,13 +82,24 @@ class App extends Component {
 
 	massTextBootyCall() {
 		this.logger('mass texting ' + this.message.value);
+		const msg = {
+			timestamp: Date.now(),
+			type: 'message',
+			msg: this.message.value
+		};
 
-		massSend(this.message.value);
+		massSend(msg);
+	}
+
+	sayMyNameSayMyName() {
+		this.logger('my name is now ' + this.message.value);
+
+		massSend({type: 'setName', newName: this.message.value});
 	}
 
 	render() {
 		const logItems = this.state.log.map(item => {
-			return <LogItem key={item.timestamp} msg={item}/>;
+			return <LogItem key={item.timestamp} msg={item} sender={this.state.names[item.sender]}/>;
 		});
 
 		return (
@@ -72,6 +111,7 @@ class App extends Component {
 					<input ref={input => this.message = input}/>
 				</p>
 				<button onClick={() => this.massTextBootyCall()}>mass text</button>
+				<button onClick={() => this.sayMyNameSayMyName()}>set name</button>
 				<ul>
 					{logItems}
 				</ul>

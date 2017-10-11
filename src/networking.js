@@ -40,17 +40,18 @@ function setupPeers(cb, logger) {
 			// Peer.send('hey peer');
 		});
 		peer.on('data', data => {
-			logger('Recieved data from peer:' + data);
+			console.log('Recieved data from peer:', data);
 			cb(data);
 		});
 		peers[peerId] = peer;
 	});
 }
 
-function massSend(message) {
+function massSend(msg) {
+	msg.sender = socket.id;
 	// eslint-disable-next-line array-callback-return
 	Object.keys(peers).map(peer => {
-		peers[peer].send(message);
+		peers[peer].send(JSON.stringify(msg));
 	});
 }
 
