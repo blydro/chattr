@@ -41,8 +41,10 @@ function setupPeers(dataCallback, logger, connectCallback) {
 			// Peer.send('hey peer');
 		});
 		peer.on('close', () => {
-			logger('Peer ' + peerId + 'disconneted');
-			delete peers[peer];
+			logger('Peer ' + peerId + ' disconnected');
+			console.log(peers);
+			delete peers[peerId];
+			console.log(peers);
 		});
 		peer.on('data', data => {
 			// Console.log('Recieved data from peer:', data);
@@ -65,8 +67,8 @@ function singleSend(peer, msg) {
 		peers[peer].send(JSON.stringify(msg));
 	} else {
 		console.log('peer %s not open. retrying...', peer);
-		console.log(peers);
-		setTimeout(singleSend(peer, msg), 1000);
+		// Console.log(peers);
+		// TODO: make this not go crazy setTimeout(singleSend(peer, msg), 5000);
 	}
 }
 
