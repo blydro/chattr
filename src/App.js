@@ -24,7 +24,9 @@ class App extends Component {
 				this.logger('log msg: ', message.msg);
 				break;
 			case 'message':
-				this.addMessage(message);
+				this.setState({
+					log: this.state.log.concat([message])
+				});
 				break;
 			case 'setName':
 				this.newName(message);
@@ -36,34 +38,20 @@ class App extends Component {
 
 	// eslint-disable-next-line no-undef
 	logger = text => {
-		const log = {...this.state.log};
-		const timestamp = Date.now() - performance.now() + performance.now(); // This is kind of nasty but it enforces unique strings
-
 		const message = {
+			timestamp: Date.now() - performance.now() + performance.now(), // This is kind of nasty but it enforces unique strings
 			type: 'log',
 			msg: text
 		};
 
-		log[timestamp] = message;
-
 		this.setState({
-			log
-		});
-	}
-
-	// eslint-disable-next-line no-undef
-	addMessage = message => {
-		const log = this.state.log.push();
-
-		log.push(message);
-		this.setState({
-			log
+			log: this.state.log.concat([message])
 		});
 	}
 
 	// eslint-disable-next-line no-undef
 	newName = message => {
-		const names = this.state.names;
+		const names = {...this.state.names};
 
 		names[message.sender] = message.newName;
 		this.setState({
@@ -73,7 +61,7 @@ class App extends Component {
 
 	componentWillMount() {
 		this.setState({
-			log: {},
+			log: [],
 			names: {},
 			myName: undefined,
 			socketId: socketId()
@@ -106,7 +94,7 @@ class App extends Component {
 	}
 
 	render() {
-		const logItems = Object.keys(this.state.log).map(item => {
+		const logItems = this.state.log.map(item => {
 			return <LogItem key={item.timestamp} msg={item} sender={this.state.names[item.sender]}/>;
 		});
 
