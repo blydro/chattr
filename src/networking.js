@@ -37,7 +37,7 @@ function setupPeers(dataCallback, logger, connectCallback) {
 		});
 		peer.on('connect', () => {
 			logger('Peer connection established with ' + peerId);
-			connectCallback(peer);
+			connectCallback(peerId);
 		});
 		peer.on('close', () => {
 			logger('Peer ' + peerId + ' disconnected');
@@ -55,18 +55,24 @@ function setupPeers(dataCallback, logger, connectCallback) {
 
 function massSend(msg) {
 	msg.sender = socket.id;
-	// eslint-disable-next-line array-callback-return
+
+		// eslint-disable-next-line array-callback-return
 	Object.keys(peers).map(peer => {
-		if (peers[peer]._channel.readyState === 'open') {
-			peers[peer].send(JSON.stringify(msg));
-		} else {
-			console.log('peer %s not open. message not sent', peer);
-		}
+		singleSend(peer, msg);
 	});
+}
+
+function singleSend(peer, msg) {
+	if (peers[peer] && peers[peer]._channel.readyState === 'open') {
+		peers[peer].send(JSON.stringify(msg));
+	} else {
+		console.log('peer %s not open. message not sent', peer);
+		console.log(peers, peer);
+	}
 }
 
 function socketId() {
 	return socket;
 }
 
-export {setupPeers, massSend, socketId};
+export {setupPeers, massSend, singleSend, socketId};

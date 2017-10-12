@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 
-import {setupPeers, massSend, socketId} from './networking';
+import {setupPeers, massSend, singleSend, socketId} from './networking';
 import LogItem from './components/LogItem';
 
 class App extends Component {
@@ -12,25 +12,28 @@ class App extends Component {
 			let decoded = new TextDecoder('utf-8').decode(data);
 			decoded = JSON.parse(decoded);
 			this.handleIncoming(decoded);
-		}, this.logger, () => {
-			// Console.log(peer);
-			// TODO: send entire name database here
+		}, this.logger, peerId => {
+			singleSend(peerId, {type: 'names', newNames: this.state.names}); // TODO: this should be more abstract
 		});
 	}
 
 	handleIncoming(message) {
 		switch (message.type) {
-			case 'log':
+			case 'log': {
 				this.logger('log msg: ', message.msg);
 				break;
-			case 'message':
+			}
+			case 'message': {
 				this.setState({
 					log: this.state.log.concat([message])
 				});
 				break;
-			case 'setName':
-				this.newName(message);
+			}
+			case 'names': {
+				const names = message.newNames;
+				this.setState({...this.state.names, names});
 				break;
+			}
 			default:
 				this.logger('recieved data without type: ', message);
 		}
@@ -49,22 +52,12 @@ class App extends Component {
 		});
 	}
 
-	// eslint-disable-next-line no-undef
-	newName = message => {
-		const names = {...this.state.names};
-
-		names[message.sender] = message.newName;
-		this.setState({
-			names
-		});
-	}
-
 	componentWillMount() {
 		this.setState({
 			log: [],
 			names: {},
 			myName: undefined,
-			socketId: socketId()
+			socket: socketId()
 		});
 	}
 
@@ -86,11 +79,14 @@ class App extends Component {
 
 	sayMyNameSayMyName() {
 		this.logger('my name is now ' + this.message.value);
+		const names = {...this.state.names};
+		names[this.state.socket.id] = this.message.value;
+
 		this.setState({
-			myName: this.message.value
+			names
 		});
 
-		massSend({type: 'setName', newName: this.message.value});
+		massSend({type: 'names', newNames: names});
 	}
 
 	render() {
