@@ -9,24 +9,24 @@ const socket = io(window.location.hostname + ':3030');
 
 function setupPeers(dataCallback, logger, connectCallback) {
 	socket.on('connect', () => {
-		logger('Connected to signalling server, Peer ID: ' + socket.id);
+		logger('Connected to signaling server, Peer ID: ' + socket.id);
 	});
 
 	socket.on('peer', data => {
 		const peerId = data.peerId;
 		const peer = new Peer({initiator: data.initiator, trickle: false});
 
-		logger('Peer available for connection discovered from signalling server, Peer ID: ' + peerId);
+		logger('Peer available for connection discovered from signaling server, Peer ID: ' + peerId);
 
 		socket.on('signal', data => {
 			if (data.peerId === peerId) {
-				logger('Received signalling data', data, 'from Peer ID:' + peerId);
+				logger('Received signaling data', data, 'from Peer ID:' + peerId);
 				peer.signal(data.signal);
 			}
 		});
 
 		peer.on('signal', data => {
-			logger('Advertising signalling data', data, 'to Peer ID:' + peerId);
+			logger('Advertising signaling data', data, 'to Peer ID:' + peerId);
 			socket.emit('signal', {
 				signal: data,
 				peerId
