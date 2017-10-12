@@ -26,7 +26,7 @@ function setupPeers(dataCallback, logger, connectCallback) {
 		});
 
 		peer.on('signal', data => {
-			logger('Advertising signaling data', data, 'to Peer ID:' + peerId);
+			logger('Advertizing signaling data', data, 'to Peer ID:' + peerId);
 			socket.emit('signal', {
 				signal: data,
 				peerId
