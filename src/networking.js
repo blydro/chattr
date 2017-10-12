@@ -54,15 +54,15 @@ function setupPeers(dataCallback, logger, connectCallback) {
 }
 
 function massSend(msg) {
-	msg.sender = socket.id;
-
-		// eslint-disable-next-line array-callback-return
+	// eslint-disable-next-line array-callback-return
 	Object.keys(peers).map(peer => {
 		singleSend(peer, msg);
 	});
 }
 
 function singleSend(peer, msg) {
+	msg.sender = socket.id;
+
 	if (peers[peer] && peers[peer]._channel.readyState === 'open') {
 		peers[peer].send(JSON.stringify(msg));
 	} else {
