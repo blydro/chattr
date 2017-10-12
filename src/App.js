@@ -66,6 +66,16 @@ class App extends Component {
 		this.logger('Served from ' + window.location.hostname);
 	}
 
+	componentWillUpdate(newProps, newState) {
+		// NOtify user on namge change
+		Object.entries(newState.names).forEach(([peerId, name]) => {
+			const oldName = this.state.names[peerId] ? this.state.names[peerId] : peerId;
+			if (oldName !== name) {
+				this.logger(oldName + ' changed to ' + name);
+			}
+		});
+	}
+
 	massTextBootyCall() {
 		this.logger('mass texting ' + this.message.value);
 		const msg = {
