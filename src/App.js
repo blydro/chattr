@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 
-import {setupPeers, massSend} from './networking';
+import {setupPeers, massSend, socketId} from './networking';
 import LogItem from './components/LogItem';
 
 class App extends Component {
@@ -36,14 +36,15 @@ class App extends Component {
 
 	// eslint-disable-next-line no-undef
 	logger = text => {
-		const log = this.state.log;
+		const log = {...this.state.log};
+		const timestamp = Date.now() - performance.now() + performance.now(); // This is kind of nasty but it enforces unique strings
+
 		const message = {
-			timestamp: Date.now() - performance.now() + performance.now(), // This is kind of nasty but it enforces unique strings
 			type: 'log',
 			msg: text
 		};
 
-		log.push(message);
+		log[timestamp] = message;
 
 		this.setState({
 			log
@@ -52,7 +53,7 @@ class App extends Component {
 
 	// eslint-disable-next-line no-undef
 	addMessage = message => {
-		const log = this.state.log;
+		const log = this.state.log.push();
 
 		log.push(message);
 		this.setState({
@@ -72,9 +73,10 @@ class App extends Component {
 
 	componentWillMount() {
 		this.setState({
-			log: [],
+			log: {},
 			names: {},
-			myName: undefined
+			myName: undefined,
+			socketId: socketId()
 		});
 	}
 
@@ -104,7 +106,7 @@ class App extends Component {
 	}
 
 	render() {
-		const logItems = this.state.log.map(item => {
+		const logItems = Object.keys(this.state.log).map(item => {
 			return <LogItem key={item.timestamp} msg={item} sender={this.state.names[item.sender]}/>;
 		});
 
