@@ -1,7 +1,9 @@
 import React, {Component} from 'react';
 
 import {setupPeers, massSend, singleSend, socketId} from './networking';
+
 import LogItem from './components/LogItem';
+import SendBox from './components/SendBox';
 
 class App extends Component {
 
@@ -66,11 +68,12 @@ class App extends Component {
 		this.logger('Served from ' + window.location.hostname);
 	}
 
-	massTextBootyCall() {
+	// eslint-disable-next-line no-undef
+	massTextBootyCall = message => {
 		const msg = {
 			timestamp: Date.now(),
 			type: 'message',
-			msg: this.message.value,
+			msg: message,
 			sender: this.state.socket.id // This is duplciated, but it is for the state set below
 		};
 
@@ -80,10 +83,9 @@ class App extends Component {
 		});
 	}
 
-	sayMyNameSayMyName() {
-		const newName = this.message.value;
+	// eslint-disable-next-line no-undef
+	sayMyNameSayMyName = newName => {
 		const oldName = this.state.names[this.state.socket.id] ? this.state.names[this.state.socket.id] : this.state.socket.id;
-
 		const updateString = oldName + ' changed to ' + newName;
 
 		this.logger('Changing name to ' + newName);
@@ -95,6 +97,7 @@ class App extends Component {
 		});
 
 		massSend({type: 'names', newNames: names});
+		console.log(updateString);
 		massSend({type: 'log', msg: updateString});
 	}
 
@@ -108,14 +111,10 @@ class App extends Component {
 				<header className="App-header">
 					<h1 className="App-title">Welcome to <span className="fancy">Chattr</span></h1>
 				</header>
-				<p className="App-intro">
-					<input ref={input => this.message = input}/>
-				</p>
-				<button onClick={() => this.massTextBootyCall()}>mass text</button>
-				<button onClick={() => this.sayMyNameSayMyName()}>set name</button>
 				<ul>
 					{logItems}
 				</ul>
+				<SendBox sendMessage={this.massTextBootyCall} setName={this.sayMyNameSayMyName}/>
 			</div>
 		);
 	}
