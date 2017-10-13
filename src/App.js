@@ -13,7 +13,7 @@ class App extends Component {
 			decoded = JSON.parse(decoded);
 			this.handleIncoming(decoded);
 		}, this.logger, peerId => {
-			singleSend(peerId, {type: 'names', newNames: this.state.names}); // TODO: this should be more abstract
+			singleSend(peerId, {type: 'names', newNames: this.state.names});
 		});
 	}
 
