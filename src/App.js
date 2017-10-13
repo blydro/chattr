@@ -73,7 +73,7 @@ class App extends Component {
 
 	componentWillMount() {
 		this.setState({
-			log: [],
+			log: JSON.parse(localStorage.getItem('log')) || [],
 			names: JSON.parse(localStorage.getItem('names')) || {},
 			myName: undefined,
 			socket: socketId()
@@ -87,7 +87,11 @@ class App extends Component {
 
 	componentWillUpdate(nextProps, nextState) {
 		localStorage.setItem('names', JSON.stringify(nextState.names));
-		localStorage.setItem('log', JSON.stringify(nextState.log));
+
+		const log = nextState.log.filter(logItem => {
+			return logItem.type === 'message';
+		});
+		localStorage.setItem('log', JSON.stringify(log.slice(log.length - 10)));
 	}
 
 	// eslint-disable-next-line no-undef
