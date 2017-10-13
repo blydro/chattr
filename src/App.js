@@ -78,7 +78,7 @@ class App extends Component {
 	// eslint-disable-next-line no-undef
 	logger = text => {
 		const message = {
-			timestamp: Date.now() - performance.now() + performance.now(), // This is kind of nasty but it enforces unique strings
+			timestamp: Date.now(), // DISABLED - performance.now() + performance.now(), // This is kind of nasty but it enforces unique strings
 			type: 'log',
 			msg: text
 		};
