@@ -56,10 +56,10 @@ class App extends Component {
 			}
 			case 'logArchive': {
 				const newLog = message.newLog;
-
-				console.log(newLog);
-				if (!this.state.log[9] || newLog[newLog.length - 1].timestamp > this.state.log[9].timestamp) {// Tehre are 10 items in teh array
-					this.setState({log: [...new Set([...this.state.log, ...newLog])]});
+				if (newLog.length > 0) {
+					if (!this.state.log[9] || newLog[newLog.length - 1].timestamp > this.state.log[9].timestamp) {// Tehre are 10 items in teh array
+						this.setState({log: [...new Set([...this.state.log, ...newLog])]});
+					}
 				}
 				break;
 			}
