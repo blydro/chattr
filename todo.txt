@@ -1,9 +1,9 @@
 - show peers online! (and add relevant logic)
-- dispaly info prettily
-- refactor logitem to display infomration more coherenty --> act depending on message type! don't rely on props
+- css
 
 - refactor setupPeers
 - componentize a little bit
   - socket should be in props
+  - logitems container?
 
 - save stuff in localstorage!
