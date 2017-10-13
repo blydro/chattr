@@ -27,7 +27,7 @@ class App extends Component {
 			if (this.state.names[oldId]) {
 				const names = {...this.state.names};
 				names[newId] = names[oldId];
-				delete names[oldId]; // Don't clog everything up
+				// Delete names[oldId]; // Don't clog everything up? maybe TODO: add a age component to this
 				this.setState({names});
 			}
 			localStorage.setItem('oldSocketId', this.state.socket.id);
@@ -58,7 +58,10 @@ class App extends Component {
 				const newLog = message.newLog;
 				if (newLog.length > 0) {
 					if (!this.state.log[9] || newLog[newLog.length - 1].timestamp > this.state.log[9].timestamp) {// Tehre are 10 items in teh array
-						this.setState({log: [...new Set([...this.state.log, ...newLog])]});
+						const noDupes = this.state.log.concat(newLog.filter((item, index) => {
+							return this.state.log[index].timestamp !== newLog[index].timestamp;
+						}));
+						this.setState({log: noDupes});
 					}
 				}
 				break;
