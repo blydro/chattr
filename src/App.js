@@ -10,12 +10,29 @@ class App extends Component {
 	constructor() {
 		super();
 
+		// DataCallback, logger, connectCallback, socketConnectCallback, disconnectCallback
 		setupPeers(data => {
 			let decoded = new TextDecoder('utf-8').decode(data);
 			decoded = JSON.parse(decoded);
 			this.handleIncoming(decoded);
 		}, this.logger, peerId => {
+			const name = this.state.names[peerId] ? this.state.names[peerId] : peerId;
+			this.logger('Peer connection established with ' + name);
+
 			singleSend(peerId, {type: 'names', newNames: {...this.state.names}});
+		}, () => {
+			const oldId = localStorage.getItem('oldSocketId');
+			const newId = this.state.socket.id;
+			if (this.state.names[oldId]) {
+				const names = {...this.state.names};
+				names[newId] = names[oldId];
+				delete names[oldId]; // Don't clog everything up
+				this.setState({names});
+			}
+			localStorage.setItem('oldSocketId', this.state.socket.id);
+		}, peer => {
+			const name = this.state.names[peer] ? this.state.names[peer] : peer;
+			this.logger(name + ' disconnected');
 		});
 	}
 
@@ -66,18 +83,6 @@ class App extends Component {
 	componentDidMount() {
 		this.logger('Log Initialized');
 		this.logger('Served from ' + window.location.hostname);
-
-		setTimeout(() => {
-			const oldId = localStorage.getItem('oldSocketId');
-			const newId = this.state.socket.id;
-			if (this.state.names[oldId]) {
-				const names = {...this.state.names};
-				names[newId] = names[oldId];
-				delete names[oldId]; // Don't clog everything up
-				this.setState({names});
-			}
-			localStorage.setItem('oldSocketId', this.state.socket.id);
-		}, 5000); // Wait for socket connection TODO: make this smarter
 	}
 
 	componentWillUpdate(nextProps, nextState) {

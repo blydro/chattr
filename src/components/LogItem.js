@@ -26,7 +26,7 @@ to enforce Time to update! */
 			);
 		}
 		return (
-			<li className="log"><em><Time value={this.props.msg.timestamp} relative/>: {this.props.msg.msg}</em></li>
+			<li className="log"><em><Time value={this.props.msg.timestamp} relative/> {this.props.msg.msg}</em></li>
 		);
 	}
 }

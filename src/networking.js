@@ -7,9 +7,10 @@ const peers = {};
 // Const socket = io(ioId);
 const socket = io(window.location.hostname + ':3030');
 
-function setupPeers(dataCallback, logger, connectCallback) {
+function setupPeers(dataCallback, logger, connectCallback, socketConnectCallback, disconnectCallback) {
 	socket.on('connect', () => {
 		logger('Connected to signaling server, Peer ID: ' + socket.id);
+		socketConnectCallback();
 	});
 
 	socket.on('peer', data => {
@@ -36,11 +37,10 @@ function setupPeers(dataCallback, logger, connectCallback) {
 			console.log('Error sending connection to peer %s:', peerId, e);
 		});
 		peer.on('connect', () => {
-			logger('Peer connection established with ' + peerId);
 			connectCallback(peerId);
 		});
 		peer.on('close', () => {
-			logger('Peer ' + peerId + ' disconnected');
+			disconnectCallback(peerId);
 			delete peers[peerId];
 		});
 		peer.on('data', data => {
@@ -61,7 +61,7 @@ function massSend(msg) {
 function singleSend(peer, msg) {
 	msg.sender = socket.id;
 
-	if (peers[peer] && peers[peer]._channel.readyState === 'open') {
+	if (peers[peer]._channel && peers[peer]._channel.readyState === 'open') {
 		peers[peer].send(JSON.stringify(msg));
 	} else {
 		console.log('peer %s not open. message not sent', peer);
