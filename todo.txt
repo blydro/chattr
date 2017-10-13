@@ -7,3 +7,4 @@
   - logitems container?
 
 - save stuff in localstorage!
+- dont' allow for setting an empty name

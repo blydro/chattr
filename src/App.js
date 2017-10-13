@@ -57,7 +57,7 @@ class App extends Component {
 	componentWillMount() {
 		this.setState({
 			log: [],
-			names: {},
+			names: JSON.parse(localStorage.getItem('names')) || {},
 			myName: undefined,
 			socket: socketId()
 		});
@@ -66,6 +66,23 @@ class App extends Component {
 	componentDidMount() {
 		this.logger('Log Initialized');
 		this.logger('Served from ' + window.location.hostname);
+
+		setTimeout(() => {
+			const oldId = localStorage.getItem('oldSocketId');
+			const newId = this.state.socket.id;
+			if (this.state.names[oldId]) {
+				const names = {...this.state.names};
+				names[newId] = names[oldId];
+				delete names[oldId]; // Don't clog everything up
+				this.setState({names});
+			}
+			localStorage.setItem('oldSocketId', this.state.socket.id);
+		}, 5000); // Wait for socket connection TODO: make this smarter
+	}
+
+	componentWillUpdate(nextProps, nextState) {
+		localStorage.setItem('names', JSON.stringify(nextState.names));
+		localStorage.setItem('log', JSON.stringify(nextState.log));
 	}
 
 	// eslint-disable-next-line no-undef
@@ -97,7 +114,6 @@ class App extends Component {
 		});
 
 		massSend({type: 'names', newNames: names});
-		console.log(updateString);
 		massSend({type: 'log', msg: updateString});
 	}
 
