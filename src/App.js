@@ -59,6 +59,7 @@ class App extends Component {
 				if (newLog.length > 0) {
 					if (!this.state.log[9] || newLog[newLog.length - 1].timestamp > this.state.log[9].timestamp) {// Tehre are 10 items in teh array
 						const noDupes = this.state.log.concat(newLog.filter((item, index) => {
+							console.log(this.state.log[index].timestamp, newLog[index].timestamp);
 							return this.state.log[index].timestamp !== newLog[index].timestamp;
 						}));
 						this.setState({log: noDupes});
