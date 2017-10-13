@@ -20,7 +20,7 @@ class App extends Component {
 			this.logger('Peer connection established with ' + name);
 
 			singleSend(peerId, {type: 'names', newNames: {...this.state.names}});
-			singleSend(peerId, {type: 'logArchive', newLog: this.state.log});
+			singleSend(peerId, {type: 'logArchive', newLog: JSON.parse(localStorage.getItem('log')) || []});
 		}, () => {
 			const oldId = localStorage.getItem('oldSocketId');
 			const newId = this.state.socket.id;
@@ -57,9 +57,9 @@ class App extends Component {
 			case 'logArchive': {
 				const newLog = message.newLog;
 
-				if (!newLog[9] || newLog[9].timestamp > this.state.log[9].timestamp) {// Tehre are 10 items in teh array
-					console.log(newLog);
-					this.setState({log: newLog});
+				console.log(newLog);
+				if (!this.state.log[9] || newLog[newLog.length - 1].timestamp > this.state.log[9].timestamp) {// Tehre are 10 items in teh array
+					this.setState({log: [...new Set([...this.state.log, ...newLog])]});
 				}
 				break;
 			}
@@ -83,7 +83,7 @@ class App extends Component {
 
 	componentWillMount() {
 		this.setState({
-			log: [], // J localStorage.getItem('log') || [],
+			log: JSON.parse(localStorage.getItem('log')) || [],
 			names: JSON.parse(localStorage.getItem('names')) || {},
 			myName: undefined,
 			socket: socketId()
@@ -101,7 +101,7 @@ class App extends Component {
 		const log = nextState.log.filter(logItem => {
 			return logItem.type === 'message';
 		});
-		// TODO: FIX THIS localStorage.setItem('log', log.slice(log.length - 10));
+		localStorage.setItem('log', JSON.stringify(log.slice(log.length - 10)));
 	}
 
 	// eslint-disable-next-line no-undef
