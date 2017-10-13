@@ -16,9 +16,11 @@ to enforce Time to update! */
 	}
 
 	render() {
+		const name = this.props.names[this.props.msg.sender] || this.props.msg.sender;
+
 		return (
 			<li className={this.props.msg.type}>
-				<Time value={this.props.msg.timestamp} relative/> from {this.props.sender || this.props.msg.sender || 'me'}: {this.props.msg.msg}
+				<Time value={this.props.msg.timestamp} relative/> from {name || 'me'}: {this.props.msg.msg}
 			</li>
 		);
 	}
@@ -26,7 +28,11 @@ to enforce Time to update! */
 
 LogItem.propTypes = {
 	msg: PropTypes.object.isRequired,
-	sender: PropTypes.string
+	names: PropTypes.object
+};
+
+LogItem.defaultProps = {
+	names: {}
 };
 
 export default LogItem;
