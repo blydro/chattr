@@ -21,12 +21,12 @@ to enforce Time to update! */
 		if (name) {
 			return (
 				<li className={this.props.msg.type}>
-					<Time value={this.props.msg.timestamp} relative/> from {name}: {this.props.msg.msg}
+					<em><Time value={this.props.msg.timestamp} relative/></em> {name}: {this.props.msg.msg}
 				</li>
 			);
 		}
 		return (
-			<li className="log">LOG: <Time value={this.props.msg.timestamp} relative/>: {this.props.msg.msg}</li>
+			<li className="log"><em><Time value={this.props.msg.timestamp} relative/>: {this.props.msg.msg}</em></li>
 		);
 	}
 }

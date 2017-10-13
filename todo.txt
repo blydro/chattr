@@ -5,3 +5,5 @@
 - refactor setupPeers
 - componentize a little bit
   - socket should be in props
+
+- save stuff in localstorage!

@@ -67,20 +67,24 @@ class App extends Component {
 	}
 
 	massTextBootyCall() {
-		this.logger('mass texting ' + this.message.value);
 		const msg = {
 			timestamp: Date.now(),
 			type: 'message',
-			msg: this.message.value
+			msg: this.message.value,
+			sender: this.state.socket.id // This is duplciated, but it is for the state set below
 		};
 
 		massSend(msg);
+		this.setState({
+			log: this.state.log.concat([msg])
+		});
 	}
 
 	sayMyNameSayMyName() {
 		const newName = this.message.value;
+		const oldName = this.state.names[this.state.socket.id] ? this.state.names[this.state.socket.id] : this.state.socket.id;
 
-		const updateString = this.state.names[this.state.socket.id] + ' changed to ' + newName;
+		const updateString = oldName + ' changed to ' + newName;
 
 		this.logger('Changing name to ' + newName);
 		const names = this.state.names;
