@@ -41,9 +41,7 @@ function setupPeers(dataCallback, logger, connectCallback) {
 		});
 		peer.on('close', () => {
 			logger('Peer ' + peerId + ' disconnected');
-			console.log(peers);
 			delete peers[peerId];
-			console.log(peers);
 		});
 		peer.on('data', data => {
 			// Console.log('Recieved data from peer:', data);

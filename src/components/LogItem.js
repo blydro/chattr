@@ -18,10 +18,15 @@ to enforce Time to update! */
 	render() {
 		const name = this.props.names[this.props.msg.sender] || this.props.msg.sender;
 
+		if (name) {
+			return (
+				<li className={this.props.msg.type}>
+					<Time value={this.props.msg.timestamp} relative/> from {name}: {this.props.msg.msg}
+				</li>
+			);
+		}
 		return (
-			<li className={this.props.msg.type}>
-				<Time value={this.props.msg.timestamp} relative/> from {name || 'me'}: {this.props.msg.msg}
-			</li>
+			<li className="log">LOG: <Time value={this.props.msg.timestamp} relative/>: {this.props.msg.msg}</li>
 		);
 	}
 }

@@ -13,14 +13,14 @@ class App extends Component {
 			decoded = JSON.parse(decoded);
 			this.handleIncoming(decoded);
 		}, this.logger, peerId => {
-			singleSend(peerId, {type: 'names', newNames: this.state.names});
+			singleSend(peerId, {type: 'names', newNames: {...this.state.names}});
 		});
 	}
 
 	handleIncoming(message) {
 		switch (message.type) {
 			case 'log': {
-				this.logger('log msg: ', message.msg);
+				this.logger(message.msg);
 				break;
 			}
 			case 'message': {
@@ -30,8 +30,8 @@ class App extends Component {
 				break;
 			}
 			case 'names': {
-				const names = message.newNames;
-				this.setState({...this.state.names, names});
+				const names = {...this.state.names, ...message.newNames};
+				this.setState({names});
 				break;
 			}
 			default:
@@ -66,16 +66,6 @@ class App extends Component {
 		this.logger('Served from ' + window.location.hostname);
 	}
 
-	componentWillUpdate(newProps, newState) {
-		// NOtify user on namge change
-		Object.entries(newState.names).forEach(([peerId, name]) => {
-			const oldName = this.state.names[peerId] ? this.state.names[peerId] : peerId;
-			if (oldName !== name) {
-				this.logger(oldName + ' changed to ' + name);
-			}
-		});
-	}
-
 	massTextBootyCall() {
 		this.logger('mass texting ' + this.message.value);
 		const msg = {
@@ -88,15 +78,20 @@ class App extends Component {
 	}
 
 	sayMyNameSayMyName() {
-		this.logger('my name is now ' + this.message.value);
-		const names = {...this.state.names};
-		names[this.state.socket.id] = this.message.value;
+		const newName = this.message.value;
+
+		const updateString = this.state.names[this.state.socket.id] + ' changed to ' + newName;
+
+		this.logger('Changing name to ' + newName);
+		const names = this.state.names;
+		names[this.state.socket.id] = newName;
 
 		this.setState({
 			names
 		});
 
 		massSend({type: 'names', newNames: names});
+		massSend({type: 'log', msg: updateString});
 	}
 
 	render() {
