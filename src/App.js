@@ -194,12 +194,13 @@ class App extends Component {
 				<header className="App-header">
 					<h1 className="App-title">Welcome to <span className="fancy">Chattr</span></h1>
 				</header>
-				<ul>
+				<ul className="messageBox">
 					{logItems}
 				</ul>
 				<SendBox sendMessage={this.massTextBootyCall} setName={this.sayMyNameSayMyName}/>
 				<br/>
 				<button onClick={() => localStorage.setItem('log', '[]')}>reset localstorage log</button>
+				<button onClick={() => localStorage.setItem('names', '[]')}>reset localstorage names</button>
 				<button onClick={() => massSend({type: 'peerList', peerList: this.state.peerIds})}>send peerlist</button>
 				<div className="onlineList">
 					connected to:
