@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import _ from 'lodash';
 
 import {setupPeers, massSend, singleSend, socketId} from './networking';
 
@@ -26,7 +27,7 @@ class App extends Component {
 			if (this.state.names[oldId]) {
 				const names = {...this.state.names};
 				names[newId] = names[oldId];
-				// Delete names[oldId]; // Don't clog everything up? maybe TODO: add a age component to this
+				delete names[oldId]; // Don't clog everything up? maybe TODO: add a age component to this
 				this.setState({names});
 			}
 			localStorage.setItem('oldSocketId', this.state.socket.id);
@@ -43,9 +44,7 @@ class App extends Component {
 				break;
 			}
 			case 'message': {
-				this.setState({
-					log: this.state.log.concat([message])
-				});
+				this.addMessage(message);
 				break;
 			}
 			case 'names': {
@@ -54,12 +53,32 @@ class App extends Component {
 				break;
 			}
 			case 'logArchive': {
-				console.log(message);
+				for (const i in message.newLog) {
+					if (!_.some(this.state.log, message.newLog[i])) {
+						this.addMessage(message.newLog[i]);
+					}
+				}
 				break;
 			}
 			default:
 				this.logger('recieved data without type: ', message);
 		}
+	}
+
+	findLastTimestamp(log) {
+		return log[log.length - 1].timestamp;
+	}
+
+	filterLog(log, type) {
+		return log.filter(logItem => {
+			return logItem.type === type;
+		});
+	}
+
+	addMessage(message) {
+		this.setState({
+			log: this.state.log.concat([message])
+		});
 	}
 
 	// eslint-disable-next-line no-undef
@@ -70,9 +89,7 @@ class App extends Component {
 			msg: text
 		};
 
-		this.setState({
-			log: this.state.log.concat([message])
-		});
+		this.addMessage(message);
 	}
 
 	componentWillMount() {
@@ -92,9 +109,7 @@ class App extends Component {
 	componentWillUpdate(nextProps, nextState) {
 		localStorage.setItem('names', JSON.stringify(nextState.names));
 
-		const log = nextState.log.filter(logItem => {
-			return logItem.type === 'message';
-		});
+		const log = this.filterLog(nextState.log, 'message');
 		localStorage.setItem('log', JSON.stringify(log.slice(log.length - 10)));
 	}
 
@@ -145,6 +160,7 @@ class App extends Component {
 				</ul>
 				<SendBox sendMessage={this.massTextBootyCall} setName={this.sayMyNameSayMyName}/>
 				<button onClick={() => localStorage.setItem('log', '[]')}>reset localstorage log</button>
+				<button onClick={() => massSend({type: 'logArchive', newLog: this.filterLog(this.state.log, 'message')})}>masssend log</button>
 			</div>
 		);
 	}

@@ -22,7 +22,6 @@ function setupPeers(dataCallback, logger, connectCallback, socketConnectCallback
 		socket.on('signal', data => {
 			if (data.peerId === peerId) {
 				logger('Received signaling data from Peer ID:' + peerId);
-				console.log(peer);
 				peer.signal(data.signal);
 			}
 		});
