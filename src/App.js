@@ -47,7 +47,7 @@ class App extends Component {
 			this.logger(name + ' disconnected');
 
 			const peerIds = this.state.peerIds;
-			peerIds.splice(this.state.peerIds.indexOf(name), 1);
+			peerIds.splice(this.state.peerIds.indexOf(peer), 1);
 			this.setState({
 				peerIds
 			});
@@ -143,7 +143,7 @@ class App extends Component {
 		localStorage.setItem('names', JSON.stringify(nextState.names));
 
 		const log = this.filterLog(nextState.log, 'message');
-		localStorage.setItem('log', JSON.stringify(log.slice(log.length - 10)));
+		localStorage.setItem('log', JSON.stringify(log)); // Don't slice it after all: .slice(log.length - 10)));
 	}
 
 	// eslint-disable-next-line no-undef
