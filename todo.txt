@@ -1,4 +1,5 @@
-- css
+- css/ui
+- don't show ui until we connect to socket server! otherwise things break down real fast
 
 - refactor setupPeers --> either have it have its own functions or just make it cleaner and more consistent!
 - componentize a little bit
@@ -7,4 +8,4 @@
 
 - dont' allow for setting an empty name
 - put every new peer in the name object as itself?
-- use namecheck function!
+- use namecheck function in more places!
