@@ -35,6 +35,7 @@ function setupPeers(dataCallback, logger, connectCallback, socketConnectCallback
 		});
 		peer.on('error', e => {
 			console.log('Error sending connection to peer %s:', peerId, e);
+			socket.emit('request', peerId);
 		});
 		peer.on('connect', () => {
 			connectCallback(peerId);

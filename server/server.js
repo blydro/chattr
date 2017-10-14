@@ -38,24 +38,11 @@ io.on('connection', socket => {
 	});
 
 	// THis should be abscratced a bit/removed as it's not currently used TODO
-	socket.on('request', () => {
-		console.log('Connection with ID: %s requested peers again', socket.id);
-		const peersToAdvertise = _.chain(io.sockets.connected)
-			.values()
-			.without(socket)
-			// .sample(DEFAULT_PEER_COUNT)
-			.value();
-		console.log('advertising peers', _.map(peersToAdvertise, 'id'));
-		peersToAdvertise.forEach(socket2 => {
-			console.log('Advertising peer %s to %s', socket.id, socket2.id);
-			socket2.emit('peer', {
-				peerId: socket.id,
-				initiator: true
-			});
-			socket.emit('peer', {
-				peerId: socket2.id,
-				initiator: false
-			});
+	socket.on('request', socketId => {
+		console.log('Rescuing', socketId);
+		socket.emit('peer', {
+			peerId: socketId,
+			initiator: true
 		});
 	});
 });

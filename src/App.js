@@ -17,10 +17,13 @@ class App extends Component {
 			decoded = JSON.parse(decoded);
 			this.handleIncoming(decoded);
 		}, this.logger, peerId => {
-			const name = this.state.names[peerId] ? this.state.names[peerId] : peerId;
-			this.logger('Peer connection established with ' + name);
+			setTimeout(() => {
+				const name = this.state.names[peerId] ? this.state.names[peerId] : peerId;
+				this.logger('Peer connection established with ' + name);
+			}, 1500); // Artificially delay this so the name can appear!
 
 			singleSend(peerId, {type: 'names', newNames: {...this.state.names}});
+			singleSend(peerId, {type: 'logArchive', newLog: this.filterLog(this.state.log, 'message')});
 		}, () => {
 			const oldId = localStorage.getItem('oldSocketId');
 			const newId = this.state.socket.id;
@@ -160,7 +163,6 @@ class App extends Component {
 				</ul>
 				<SendBox sendMessage={this.massTextBootyCall} setName={this.sayMyNameSayMyName}/>
 				<button onClick={() => localStorage.setItem('log', '[]')}>reset localstorage log</button>
-				<button onClick={() => massSend({type: 'logArchive', newLog: this.filterLog(this.state.log, 'message')})}>masssend log</button>
 			</div>
 		);
 	}
