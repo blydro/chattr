@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import _ from 'lodash';
+import {animateScroll} from 'react-scroll';
 
 import {setupPeers, massSend, singleSend, socketId} from './networking';
 
@@ -146,6 +147,12 @@ class App extends Component {
 		localStorage.setItem('log', JSON.stringify(log)); // Don't slice it after all: .slice(log.length - 10)));
 	}
 
+	componentDidUpdate() {
+		animateScroll.scrollToBottom({
+			containerId: 'messageBox'
+		});
+	}
+
 	// eslint-disable-next-line no-undef
 	massTextBootyCall = message => {
 		const msg = {
@@ -194,7 +201,7 @@ class App extends Component {
 				<header className="App-header">
 					<h1 className="App-title">Welcome to <span className="fancy">Chattr</span></h1>
 				</header>
-				<ul className="messageBox">
+				<ul className="messageBox" id="messageBox">
 					{logItems}
 				</ul>
 				<SendBox sendMessage={this.massTextBootyCall} setName={this.sayMyNameSayMyName}/>
