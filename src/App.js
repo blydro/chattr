@@ -77,8 +77,16 @@ class App extends Component {
 				}
 				break;
 			}
+			case 'peerList': {
+				console.log('my length', this.state.peerIds.length);
+				console.log('its length', message.peerList.length);
+				if (message.peerList.length > this.state.peerIds.length) {
+					window.location.reload();
+				}
+				break;
+			}
 			default:
-				this.logger('recieved data without type: ', message);
+				this.logger('recieved data with invalid type: ' + message);
 		}
 	}
 
@@ -148,6 +156,8 @@ class App extends Component {
 		};
 
 		massSend(msg);
+		massSend({type: 'peerList', peerList: this.state.peerIds}); // Every time we send a message is a good time to send the peercheck? TODO put this on a timer and make it less bad
+
 		this.setState({
 			log: this.state.log.concat([msg])
 		});
@@ -188,9 +198,11 @@ class App extends Component {
 					{logItems}
 				</ul>
 				<SendBox sendMessage={this.massTextBootyCall} setName={this.sayMyNameSayMyName}/>
+				<br/>
 				<button onClick={() => localStorage.setItem('log', '[]')}>reset localstorage log</button>
+				<button onClick={() => massSend({type: 'peerList', peerList: this.state.peerIds})}>send peerlist</button>
 				<div className="onlineList">
-					online:
+					connected to:
 					<ul>
 						{onlineMembers}
 					</ul>
