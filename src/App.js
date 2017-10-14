@@ -20,7 +20,6 @@ class App extends Component {
 			this.logger('Peer connection established with ' + name);
 
 			singleSend(peerId, {type: 'names', newNames: {...this.state.names}});
-			singleSend(peerId, {type: 'logArchive', newLog: JSON.parse(localStorage.getItem('log')) || []});
 		}, () => {
 			const oldId = localStorage.getItem('oldSocketId');
 			const newId = this.state.socket.id;
@@ -55,19 +54,7 @@ class App extends Component {
 				break;
 			}
 			case 'logArchive': {
-				const newLog = message.newLog;
-				if (newLog.length > 0) {
-					if (!this.state.log[9] || newLog[newLog.length - 1].timestamp > this.state.log[9].timestamp) {// Tehre are 10 items in teh array
-						const noDupes = this.state.log.concat(newLog.filter((item, index) => {
-							console.log(this.state.log[index].timestamp, newLog[index].timestamp);
-							console.log(this.state.log[index].timestamp !== newLog[index].timestamp);
-							console.log('--------');
-
-							return this.state.log[index].timestamp !== newLog[index].timestamp;
-						}));
-						this.setState({log: noDupes});
-					}
-				}
+				console.log(message);
 				break;
 			}
 			default:
@@ -108,6 +95,7 @@ class App extends Component {
 		const log = nextState.log.filter(logItem => {
 			return logItem.type === 'message';
 		});
+		console.log(log);
 		localStorage.setItem('log', JSON.stringify(log.slice(log.length - 10)));
 	}
 
@@ -157,6 +145,7 @@ class App extends Component {
 					{logItems}
 				</ul>
 				<SendBox sendMessage={this.massTextBootyCall} setName={this.sayMyNameSayMyName}/>
+				<button onClick={() => localStorage.setItem('log', '[]')}>reset localstorage log</button>
 			</div>
 		);
 	}
