@@ -29,9 +29,6 @@
     "eject": "react-scripts eject",
     "server": "node server/server.js"
   },
-  "now": {
-    "alias": "blydro-socketio-server.now.sh"
-  },
   "xo": {
     "extends": "xo-react",
     "parser": "babel-eslint",
