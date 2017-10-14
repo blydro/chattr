@@ -22,6 +22,10 @@ class App extends Component {
 				this.logger('Peer connection established with ' + name);
 			}, 1500); // Artificially delay this so the name can appear!
 
+			this.setState({
+				peerIds: this.state.peerIds.concat([peerId])
+			});
+
 			singleSend(peerId, {type: 'names', newNames: {...this.state.names}});
 			singleSend(peerId, {type: 'logArchive', newLog: this.filterLog(this.state.log, 'message')});
 		}, () => {
@@ -34,9 +38,19 @@ class App extends Component {
 				this.setState({names});
 			}
 			localStorage.setItem('oldSocketId', this.state.socket.id);
+
+			this.setState({
+				peerIds: this.state.peerIds.concat([this.state.socket.id])
+			});
 		}, peer => {
 			const name = this.state.names[peer] ? this.state.names[peer] : peer;
 			this.logger(name + ' disconnected');
+
+			const peerIds = this.state.peerIds;
+			peerIds.splice(this.state.peerIds.indexOf(name), 1);
+			this.setState({
+				peerIds
+			});
 		});
 	}
 
@@ -78,6 +92,13 @@ class App extends Component {
 		});
 	}
 
+	findName(peerId) {
+		if (this.state.names[peerId]) {
+			return this.state.names[peerId];
+		}
+		return peerId;
+	}
+
 	addMessage(message) {
 		this.setState({
 			log: this.state.log.concat([message])
@@ -99,6 +120,7 @@ class App extends Component {
 		this.setState({
 			log: JSON.parse(localStorage.getItem('log')) || [],
 			names: JSON.parse(localStorage.getItem('names')) || {},
+			peerIds: [],
 			myName: undefined,
 			socket: socketId()
 		});
@@ -153,6 +175,10 @@ class App extends Component {
 			return <LogItem key={item.timestamp} msg={item} names={this.state.names}/>;
 		});
 
+		const onlineMembers = this.state.peerIds.map(peerId => {
+			return <li key={peerId}>{this.findName(peerId)}</li>;
+		});
+
 		return (
 			<div className="App">
 				<header className="App-header">
@@ -163,6 +189,12 @@ class App extends Component {
 				</ul>
 				<SendBox sendMessage={this.massTextBootyCall} setName={this.sayMyNameSayMyName}/>
 				<button onClick={() => localStorage.setItem('log', '[]')}>reset localstorage log</button>
+				<div className="onlineList">
+					online:
+					<ul>
+						{onlineMembers}
+					</ul>
+				</div>
 			</div>
 		);
 	}
