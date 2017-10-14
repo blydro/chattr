@@ -95,7 +95,6 @@ class App extends Component {
 		const log = nextState.log.filter(logItem => {
 			return logItem.type === 'message';
 		});
-		console.log(log);
 		localStorage.setItem('log', JSON.stringify(log.slice(log.length - 10)));
 	}
 

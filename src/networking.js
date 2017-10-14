@@ -15,13 +15,14 @@ function setupPeers(dataCallback, logger, connectCallback, socketConnectCallback
 
 	socket.on('peer', data => {
 		const peerId = data.peerId;
-		const peer = new Peer({initiator: data.initiator, trickle: false});
+		const peer = new Peer({initiator: data.initiator, trickle: true, reconnectTimer: 900});
 
 		logger('Peer available for connection discovered from signaling server, Peer ID: ' + peerId);
 
 		socket.on('signal', data => {
 			if (data.peerId === peerId) {
 				logger('Received signaling data', data, 'from Peer ID:' + peerId);
+				console.log(peer);
 				peer.signal(data.signal);
 			}
 		});

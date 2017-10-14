@@ -7,10 +7,10 @@ io.origins('*:*');
 io.on('connection', socket => {
 	console.log('Connection with ID:', socket.id);
 	const peersToAdvertise = _.chain(io.sockets.connected)
-    .values()
-    .without(socket)
-    // .sample(DEFAULT_PEER_COUNT)
-    .value();
+		.values()
+		.without(socket)
+		// .sample(DEFAULT_PEER_COUNT)
+		.value();
 	console.log('advertising peers', _.map(peersToAdvertise, 'id'));
 	peersToAdvertise.forEach(socket2 => {
 		console.log('Advertising peer %s to %s', socket.id, socket2.id);
@@ -36,7 +36,28 @@ io.on('connection', socket => {
 			peerId: socket.id
 		});
 	});
-});
 
+	// THis should be abscratced a bit TODO
+	socket.on('request', () => {
+		console.log('Connection with ID: %s requested peers again', socket.id);
+		const peersToAdvertise = _.chain(io.sockets.connected)
+			.values()
+			.without(socket)
+			// .sample(DEFAULT_PEER_COUNT)
+			.value();
+		console.log('advertising peers', _.map(peersToAdvertise, 'id'));
+		peersToAdvertise.forEach(socket2 => {
+			console.log('Advertising peer %s to %s', socket.id, socket2.id);
+			socket2.emit('peer', {
+				peerId: socket.id,
+				initiator: true
+			});
+			socket.emit('peer', {
+				peerId: socket2.id,
+				initiator: false
+			});
+		});
+	});
+});
 server.listen(3030);
 console.log('listening on 3030');
