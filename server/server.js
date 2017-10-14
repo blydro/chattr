@@ -37,7 +37,7 @@ io.on('connection', socket => {
 		});
 	});
 
-	// THis should be abscratced a bit TODO
+	// THis should be abscratced a bit/removed as it's not currently used TODO
 	socket.on('request', () => {
 		console.log('Connection with ID: %s requested peers again', socket.id);
 		const peersToAdvertise = _.chain(io.sockets.connected)
