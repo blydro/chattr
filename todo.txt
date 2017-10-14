@@ -1,11 +1,10 @@
-- show peers online! (and add relevant logic)
 - css
 
 - refactor setupPeers --> either have it have its own functions or just make it cleaner and more consistent!
 - componentize a little bit
-  - socket should be in props
-  - logitems container?
+  - socket should be in props!
+  - logitems container!
 
-- save stuff in localstorage!
 - dont' allow for setting an empty name
-- make name check/peerid parse a function? or even better put every new peer in the name object as itself?
+- put every new peer in the name object as itself?
+- use namecheck function!

@@ -21,8 +21,8 @@ class SendBox extends React.Component {
 		return (
 			<div>
 				<form ref={input => this.sendForm = input} onSubmit={e => this.hotlineBling(e)}>
-					<input ref={input => this.message = input} type="text"/>
-					<button type="submit">Send</button>
+					<input ref={input => this.message = input} type="text" className="theChosenBox"/>
+					<button type="submit">❯</button>
 				</form>
 				<button onClick={e => this.whatsMyMotherfuckingName(e)}>set name</button>
 			</div>
