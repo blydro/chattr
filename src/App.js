@@ -2,6 +2,10 @@ import React, {Component} from 'react';
 import _ from 'lodash';
 import {animateScroll} from 'react-scroll';
 
+import {
+    Button
+} from '@blueprintjs/core';
+
 import {setupPeers, massSend, singleSend, socketId} from './networking';
 
 import LogItem from './components/LogItem';
@@ -206,9 +210,9 @@ class App extends Component {
 				</ul>
 				<SendBox sendMessage={this.massTextBootyCall} setName={this.sayMyNameSayMyName}/>
 				<br/>
-				<button onClick={() => localStorage.setItem('log', '[]')}>reset localstorage log</button>
-				<button onClick={() => localStorage.setItem('names', '[]')}>reset localstorage names</button>
-				<button onClick={() => massSend({type: 'peerList', peerList: this.state.peerIds})}>send peerlist</button>
+				<Button onClick={() => localStorage.setItem('log', '[]')}>reset localstorage log</Button>
+				<Button onClick={() => localStorage.setItem('names', '[]')}>reset localstorage names</Button>
+				<Button onClick={() => massSend({type: 'peerList', peerList: this.state.peerIds})}>send peerlist</Button>
 				<div className="onlineList">
 					connected to:
 					<ul>

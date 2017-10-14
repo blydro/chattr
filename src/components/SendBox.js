@@ -1,6 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import {
+    Button, Input
+} from '@blueprintjs/core';
+
 class SendBox extends React.Component {
 
 	hotlineBling(event) {
@@ -22,9 +26,9 @@ class SendBox extends React.Component {
 			<div>
 				<form ref={input => this.sendForm = input} onSubmit={e => this.hotlineBling(e)}>
 					<input ref={input => this.message = input} type="text" className="theChosenBox"/>
-					<button type="submit">❯</button>
+					<Button type="submit">❯</Button>
 				</form>
-				<button onClick={e => this.whatsMyMotherfuckingName(e)}>set name</button>
+				<Button onClick={e => this.whatsMyMotherfuckingName(e)}>set name</Button>
 			</div>
 		);
 	}
