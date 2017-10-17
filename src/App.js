@@ -12,12 +12,12 @@ class App extends Component {
 	constructor() {
 		super();
 
-		// DataCallback, logger, connectCallback, socketConnectCallback, disconnectCallback
-		setupPeers(data => {
+		const dataCallback = data => {
 			let decoded = new TextDecoder('utf-8').decode(data);
 			decoded = JSON.parse(decoded);
 			this.handleIncoming(decoded);
-		}, this.logger, peerId => {
+		};
+		const connectCallback = peerId => {
 			setTimeout(() => {
 				const name = this.state.names[peerId] ? this.state.names[peerId] : peerId;
 				this.logger('Peer connection established with ' + name);
@@ -29,8 +29,9 @@ class App extends Component {
 
 			singleSend(peerId, {type: 'names', newNames: {...this.state.names}});
 			singleSend(peerId, {type: 'logArchive', newLog: this.filterLog(this.state.log, 'message')});
-		}, () => {
-			const oldId = localStorage.getItem('oldSocketId');
+		};
+		const socketConnectCallback = () => {
+			const oldId = localStorage.getItem('oldSocketId') || '';
 			const newId = this.state.socket.id;
 			if (this.state.names[oldId]) {
 				const names = {...this.state.names};
@@ -43,18 +44,25 @@ class App extends Component {
 			this.setState({
 				peerIds: this.state.peerIds.concat([this.state.socket.id])
 			});
-		}, peer => {
-			const name = this.state.names[peer] ? this.state.names[peer] : peer;
+		};
+		const disconnectCallback = peerId => {
+			const name = this.state.names[peerId] ? this.state.names[peerId] : peerId;
 			this.logger(name + ' disconnected');
 
 			const peerIds = this.state.peerIds;
-			peerIds.splice(this.state.peerIds.indexOf(peer), 1);
+			peerIds.splice(this.state.peerIds.indexOf(peerId), 1);
 			this.setState({
 				peerIds
 			});
-		});
-	}
+		};
 
+		setupPeers({
+			dataCallback,
+			connectCallback,
+			socketConnectCallback,
+			disconnectCallback
+		}, this.logger);
+	}
 	handleIncoming(message) {
 		switch (message.type) {
 			case 'log': {

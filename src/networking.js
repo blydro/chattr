@@ -7,10 +7,10 @@ const peers = {};
 // Const socket = io(ioId);
 const socket = io(window.location.hostname + ':3030');
 
-function setupPeers(dataCallback, logger, connectCallback, socketConnectCallback, disconnectCallback) {
+function setupPeers(callbacks, logger) {
 	socket.on('connect', () => {
 		logger('Connected to signaling server, Peer ID: ' + socket.id);
-		socketConnectCallback();
+		callbacks.socketConnectCallback();
 	});
 
 	socket.on('peer', data => {
@@ -38,15 +38,15 @@ function setupPeers(dataCallback, logger, connectCallback, socketConnectCallback
 			socket.emit('request', peerId);
 		});
 		peer.on('connect', () => {
-			connectCallback(peerId);
+			callbacks.connectCallback(peerId);
 		});
 		peer.on('close', () => {
-			disconnectCallback(peerId);
+			callbacks.disconnectCallback(peerId);
 			delete peers[peerId];
 		});
 		peer.on('data', data => {
 			// DEBUG console.log('Recieved data from peer:', data); // DEBUG
-			dataCallback(data);
+			callbacks.dataCallback(data);
 		});
 		peers[peerId] = peer;
 	});
