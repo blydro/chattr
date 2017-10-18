@@ -7,4 +7,3 @@
 
 - dont' allow for setting an empty name
 - put every new peer in the name object as itself?
-- use namecheck function in more places! <--

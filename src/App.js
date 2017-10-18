@@ -19,8 +19,7 @@ class App extends Component {
 		};
 		const connectCallback = peerId => {
 			setTimeout(() => {
-				const name = this.state.names[peerId] ? this.state.names[peerId] : peerId;
-				this.logger('Peer connection established with ' + name);
+				this.logger('Peer connection established with ' + this.findName(peerId));
 			}, 1500); // Artificially delay this so the name can appear!
 
 			this.setState({
@@ -46,8 +45,7 @@ class App extends Component {
 			});
 		};
 		const disconnectCallback = peerId => {
-			const name = this.state.names[peerId] ? this.state.names[peerId] : peerId;
-			this.logger(name + ' disconnected');
+			this.logger(this.findName(peerId) + ' disconnected');
 
 			const peerIds = this.state.peerIds;
 			peerIds.splice(this.state.peerIds.indexOf(peerId), 1);
