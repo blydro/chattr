@@ -6,10 +6,13 @@ const peers = {};
 // Const ioId = 'https://blydro-socketio-server.now.sh';
 // Const socket = io(ioId);
 const socket = io(window.location.hostname + ':3030');
+let zombieSocketId;
 
 function setupPeers(callbacks, logger) {
 	socket.on('connect', () => {
 		logger('Connected to signaling server, Peer ID: ' + socket.id);
+		zombieSocketId = socket.id; // Protect this id in case we disconnect from the socket server
+
 		callbacks.socketConnectCallback();
 	});
 
@@ -60,7 +63,7 @@ function massSend(msg) {
 }
 
 function singleSend(peer, msg) {
-	msg.sender = socket.id;
+	msg.sender = socket.id || zombieSocketId;
 
 	if (peers[peer]._channel && peers[peer]._channel.readyState === 'open') {
 		peers[peer].send(JSON.stringify(msg));
