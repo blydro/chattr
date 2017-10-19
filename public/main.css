@@ -1,0 +1,10 @@
+body {
+  font-family: sans-serif;
+  background: #ddd;
+}
+body em {
+  color: #bbb;
+}
+body .fancy {
+  color: #a4f4f9;
+}

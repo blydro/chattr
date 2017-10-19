@@ -15,16 +15,17 @@
     "socket.io-client": "^2.0.3"
   },
   "devDependencies": {
+    "create-react-app-stylus": "^1.1.1",
     "eslint-config-xo-react": "^0.13.0",
     "eslint-plugin-react": "^7.4.0",
     "react-scripts": "1.0.14",
     "xo": "^0.18.2"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "react-scripts-with-stylus start public/main.styl",
     "now-start": "node server/server.js",
     "now-build": "echo no",
-    "build": "react-scripts build",
+    "build": "react-scripts-with-stylus build public/main.styl",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "server": "node server/server.js"
