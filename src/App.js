@@ -92,7 +92,7 @@ class App extends Component {
 				console.log('my length', this.state.peerIds.length);
 				console.log('its length', message.peerList.length);
 
-				if (message.peerList.length > this.state.peerIds.length) {
+				if (message.peerList.length !== this.state.peerIds.length) {
 					window.location.reload();
 				}
 				break;
