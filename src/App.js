@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
 import _ from 'lodash';
-import {animateScroll} from 'react-scroll';
 
 import {setupPeers, massSend, singleSend, socketId} from './networking';
 
-import LogItem from './components/LogItem';
 import SendBox from './components/SendBox';
+import Messages from './components/Messages';
+import OnlineList from './components/OnlineList';
 
 class App extends Component {
 
@@ -17,6 +17,7 @@ class App extends Component {
 			decoded = JSON.parse(decoded);
 			this.handleIncoming(decoded);
 		};
+
 		const connectCallback = peerId => {
 			setTimeout(() => {
 				this.logger('Peer connection established with ' + this.findName(peerId));
@@ -29,6 +30,7 @@ class App extends Component {
 			singleSend(peerId, {type: 'names', newNames: {...this.state.names}});
 			singleSend(peerId, {type: 'logArchive', newLog: this.filterLog(this.state.log, 'message')});
 		};
+
 		const socketConnectCallback = () => {
 			const oldId = localStorage.getItem('oldSocketId') || '';
 			const newId = this.state.socket.id;
@@ -44,6 +46,7 @@ class App extends Component {
 				peerIds: this.state.peerIds.concat([this.state.socket.id])
 			});
 		};
+
 		const disconnectCallback = peerId => {
 			this.logger(this.findName(peerId) + ' disconnected');
 
@@ -61,6 +64,7 @@ class App extends Component {
 			disconnectCallback
 		}, this.logger);
 	}
+
 	handleIncoming(message) {
 		switch (message.type) {
 			case 'log': {
@@ -87,6 +91,7 @@ class App extends Component {
 			case 'peerList': {
 				console.log('my length', this.state.peerIds.length);
 				console.log('its length', message.peerList.length);
+
 				if (message.peerList.length > this.state.peerIds.length) {
 					window.location.reload();
 				}
@@ -107,7 +112,8 @@ class App extends Component {
 		});
 	}
 
-	findName(peerId) {
+	// eslint-disable-next-line no-undef
+	findName = peerId => {
 		if (this.state.names[peerId]) {
 			return this.state.names[peerId];
 		}
@@ -153,12 +159,6 @@ class App extends Component {
 		localStorage.setItem('log', JSON.stringify(log)); // Don't slice it after all: .slice(log.length - 10)));
 	}
 
-	componentDidUpdate() {
-		animateScroll.scrollToBottom({
-			containerId: 'messageBox'
-		});
-	}
-
 	// eslint-disable-next-line no-undef
 	massTextBootyCall = message => {
 		const msg = {
@@ -194,33 +194,19 @@ class App extends Component {
 	}
 
 	render() {
-		const logItems = this.state.log.map(item => {
-			return <LogItem key={item.timestamp} msg={item} names={this.state.names}/>;
-		});
-
-		const onlineMembers = this.state.peerIds.map(peerId => {
-			return <li key={peerId}>{this.findName(peerId)}</li>;
-		});
-
 		return (
 			<div className="App">
 				<header className="App-header">
 					<h1 className="App-title">Welcome to <span className="fancy">Chattr</span></h1>
 				</header>
-				<ul className="messageBox" id="messageBox">
-					{logItems}
-				</ul>
+				<Messages log={this.state.log} names={this.state.names}/>
 				<SendBox sendMessage={this.massTextBootyCall} setName={this.sayMyNameSayMyName}/>
 				<br/>
 				<button onClick={() => localStorage.setItem('log', '[]')}>reset localstorage log</button>
 				<button onClick={() => localStorage.setItem('names', '[]')}>reset localstorage names</button>
 				<button onClick={() => massSend({type: 'peerList', peerList: this.state.peerIds})}>send peerlist</button>
-				<div className="onlineList">
-					connected to:
-					<ul>
-						{onlineMembers}
-					</ul>
-				</div>
+				<OnlineList peers={this.state.peerIds} findName={this.findName}/>
+
 			</div>
 		);
 	}
