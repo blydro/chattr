@@ -197,7 +197,7 @@ class App extends Component {
 		return (
 			<div className="App">
 				<header className="App-header">
-					<h1 className="App-title">Welcome to <span className="fancy">Chattr</span></h1>
+					<h1 className="App-title"><span className="fancy">Chattr</span></h1>
 				</header>
 				<Messages log={this.state.log} names={this.state.names}/>
 				<SendBox sendMessage={this.massTextBootyCall} setName={this.sayMyNameSayMyName}/>
