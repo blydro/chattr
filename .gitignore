@@ -83,6 +83,4 @@ yarn-error.log*
 .flowconfig
 
 #stylus
-/public/main.css
-main.css
-public/main.css
+*.css
