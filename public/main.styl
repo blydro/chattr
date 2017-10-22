@@ -1,7 +1,63 @@
+@import 'normalize.styl'
+
 body
-    font-family sans-serif
-    background #ddd
+    font-family Source Sans Pro
+    -webkit-font-smoothing: antialiased;
+    background #FAF8F4;
+    overflow-x hidden
     em
       color #bbb
     .fancy
       color #a4f4f9
+
+.messageBox, .sendBox
+  display flex
+  justify-content center
+  align-items center
+
+.messageBox
+  max-height: 50vh;
+  overflow-y: scroll;
+
+.messageBoxList
+  max-width 80vw
+  width 43em
+
+.App-header
+    width 100%
+    background #4b4b4b
+    padding 15px
+    margin-top 50px
+
+.onlineList
+  color #eee
+
+.theChosenBox
+  padding 10px 30px 10px 7px
+  margin-top 15px
+  border: #EBE7E6 1px solid
+  border-radius 3px
+  outline none
+  box-shadow: 0px 1px 4px 0px #EFEBE7;
+  caret-color #4C8EB9
+  max-width 80vw
+  width 35em
+  font-size 1rem
+
+  transition: box-shadow .3s ease-in
+.theChosenBox:hover
+  box-shadow: 0px 1.5px 4px 0px #EFEBE7;
+.theChosenBox:focus
+  box-shadow: 0px 2px 4px 0px #EFEBE7;
+
+.info
+  color #202020
+  margin-bottom: 5px
+
+.name
+  font-weight: 600
+
+.message
+  margin-bottom 15px
+.log
+  margin-bottom 5px

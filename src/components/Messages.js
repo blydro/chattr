@@ -9,19 +9,22 @@ class Messages extends React.Component {
 
 	componentDidUpdate() {
 		animateScroll.scrollToBottom({
-			containerId: 'messageBox'
+			containerId: 'messageBox',
+			duration: 100
 		});
 	}
 
 	render() {
 		return (
-			<ul className="messageBox" id="messageBox">
-				{
+			<div className="messageBox" id="messageBox">
+				<ul className="messageBoxList">
+					{
 					this.props.log.map(item => {
 						return <LogItem key={item.timestamp} msg={item} names={this.props.names}/>;
 					})
 				}
-			</ul>
+				</ul>
+			</div>
 		);
 	}
 }

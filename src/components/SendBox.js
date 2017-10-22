@@ -6,25 +6,21 @@ class SendBox extends React.Component {
 	hotlineBling(event) {
 		event.preventDefault();
 
-		this.props.sendMessage(this.message.value);
-		this.sendForm.reset();
-	}
+		if (this.props.myName) {
+			this.props.sendMessage(this.message.value);
+		} else {
+			this.props.setName(this.message.value);
+		}
 
-	whatsMyMotherfuckingName(event) {
-		event.preventDefault();
-
-		this.props.setName(this.message.value);
 		this.sendForm.reset();
 	}
 
 	render() {
 		return (
-			<div>
+			<div className="sendBox">
 				<form ref={input => this.sendForm = input} onSubmit={e => this.hotlineBling(e)}>
-					<input ref={input => this.message = input} type="text" className="theChosenBox"/>
-					<button type="submit">❯</button>
-				</form>
-				<button onClick={e => this.whatsMyMotherfuckingName(e)}>set name</button>
+					<input ref={input => this.message = input} type="text" className="theChosenBox" placeholder={this.props.myName ? '' : 'Choose a new name...'}/>
+				</form><br/>
 			</div>
 		);
 	}
@@ -32,7 +28,12 @@ class SendBox extends React.Component {
 
 SendBox.propTypes = {
 	sendMessage: PropTypes.func.isRequired,
-	setName: PropTypes.func.isRequired
+	setName: PropTypes.func.isRequired,
+	myName: PropTypes.string
+};
+
+SendBox.defaultProps = {
+	myName: undefined
 };
 
 export default SendBox;

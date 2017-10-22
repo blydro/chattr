@@ -181,7 +181,11 @@ class App extends Component {
 		const oldName = this.state.names[this.state.socket.id] ? this.state.names[this.state.socket.id] : this.state.socket.id;
 		const updateString = oldName + ' changed to ' + newName;
 
-		this.logger('Changing name to ' + newName);
+		if (newName.length > 0) {
+			this.logger('Changing name to ' + newName);
+		} else {
+			this.logger('Resetting name');
+		}
 		const names = this.state.names;
 		names[this.state.socket.id] = newName;
 
@@ -196,16 +200,24 @@ class App extends Component {
 	render() {
 		return (
 			<div className="App">
+				<div className="interface">
+					<Messages log={this.state.log} names={this.state.names}/>
+					<SendBox sendMessage={this.massTextBootyCall} setName={this.sayMyNameSayMyName} myName={this.state.names[this.state.socket.id]}/>
+				</div>
+
+				<br/>
+				{this.props.debug === true ?
+					<div className="debugButtons">
+						<button onClick={() => localStorage.setItem('log', '[]')}>reset localstorage log</button>
+						<button onClick={() => localStorage.setItem('names', '[]')}>reset localstorage names</button>
+						<button onClick={() => massSend({type: 'peerList', peerList: this.state.peerIds})}>send peerlist</button>
+					</div> :
+				''}
+
 				<header className="App-header">
 					<h1 className="App-title"><span className="fancy">Chattr</span></h1>
+					<OnlineList peers={this.state.peerIds} findName={this.findName} setName={this.sayMyNameSayMyName} me={this.state.socket.id}/>
 				</header>
-				<Messages log={this.state.log} names={this.state.names}/>
-				<SendBox sendMessage={this.massTextBootyCall} setName={this.sayMyNameSayMyName}/>
-				<br/>
-				<button onClick={() => localStorage.setItem('log', '[]')}>reset localstorage log</button>
-				<button onClick={() => localStorage.setItem('names', '[]')}>reset localstorage names</button>
-				<button onClick={() => massSend({type: 'peerList', peerList: this.state.peerIds})}>send peerlist</button>
-				<OnlineList peers={this.state.peerIds} findName={this.findName}/>
 
 			</div>
 		);
