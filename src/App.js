@@ -182,11 +182,6 @@ class App extends Component {
 		const oldName = this.state.names[this.state.socket.id] ? this.state.names[this.state.socket.id] : this.state.socket.id;
 		const updateString = oldName + ' changed to ' + newName;
 
-		if (newName.length > 0) {
-			this.logger('Changing name to ' + newName);
-		} else {
-			this.logger('Resetting name');
-		}
 		const names = this.state.names;
 		names[this.state.socket.id] = newName;
 
@@ -195,7 +190,14 @@ class App extends Component {
 		});
 
 		massSend({type: 'names', newNames: names});
-		massSend({type: 'log', msg: updateString});
+
+		if (newName.length > 0) {
+			massSend({type: 'log', msg: updateString});
+			this.logger('Changing name to ' + newName);
+		} else {
+			massSend({type: 'log', msg: oldName + ' reset name'});
+			this.logger('Resetting name');
+		}
 	}
 
 	render() {
