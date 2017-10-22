@@ -3,9 +3,7 @@
   - new messages fade in!
   - prettify reset button
 
-- don't show ui until we connect to socket server! otherwise things break down real fast
+- don't show ui until we connect to socket server! otherwise things break down real fast (!!!!)
 - include intro message if the log is empty
 
-- dont' allow for setting an empty name
-- put every new peer in the name object as itself?
 - disconnect from socket server when nessesary!
