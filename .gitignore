@@ -81,3 +81,6 @@ yarn-error.log*
 
 #flow
 .flowconfig
+
+#stylus
+public/main.css
