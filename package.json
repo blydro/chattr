@@ -26,7 +26,8 @@
     "build": "react-scripts-with-stylus build public/main.styl",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "server": "node server/server.js"
+    "server": "node server/server.js",
+    "dev": "node server/server.js&react-scripts-with-stylus start public/main.styl"
   },
   "xo": {
     "extends": "xo-react",
