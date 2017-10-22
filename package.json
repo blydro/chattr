@@ -23,8 +23,6 @@
   },
   "scripts": {
     "start": "react-scripts-with-stylus start public/main.styl",
-    "now-start": "node server/server.js",
-    "now-build": "echo no",
     "build": "react-scripts-with-stylus build public/main.styl",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
