@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
 
 import {setupPeers, massSend, singleSend, socketId} from './networking';
@@ -223,5 +224,9 @@ class App extends Component {
 		);
 	}
 }
+
+App.PropTypes = {
+	debug: PropTypes.bool.isRequired
+};
 
 export default App;
