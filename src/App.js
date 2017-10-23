@@ -227,7 +227,7 @@ class App extends Component {
 	}
 }
 
-App.PropTypes = {
+App.propTypes = {
 	debug: PropTypes.bool.isRequired
 };
 
