@@ -1,3 +1,6 @@
+#stylus
+*.css
+
 # Logs
 logs
 *.log
@@ -81,6 +84,3 @@ yarn-error.log*
 
 #flow
 .flowconfig
-
-#stylus
-*.css
