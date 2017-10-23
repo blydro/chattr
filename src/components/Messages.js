@@ -19,7 +19,8 @@ class Messages extends React.Component {
 		return (
 			<div className="messageBox" id="messageBox">
 				<ul className="messageBoxList">
-					<ReactCSSTransitionGroup transitionName="fade" transitionEnterTimeout={1} transitionLeaveTimeout={1}> {/* this timeout should be less hacky TODO */}
+					{/* this timeout should be less hacky TODO */}
+					<ReactCSSTransitionGroup transitionName="fade" transitionEnterTimeout={1} transitionLeaveTimeout={1}>
 						{
 							this.props.log.map(item => {
 								return <LogItem key={item.timestamp} msg={item} names={this.props.names}/>;
