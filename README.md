@@ -1,4 +1,5 @@
-#P2P Chat
+Chattr
+==============
 
 ##UI
 [ ] prettify reset button
