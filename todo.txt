@@ -1,9 +1,0 @@
-- css/ui
-  -colors!!!
-  - new messages fade in!
-  - prettify reset button
-
-- don't show ui until we connect to socket server! otherwise things break down real fast (!!!!)
-- include intro message if the log is empty
-
-- disconnect from socket server when nessesary!
