@@ -11,7 +11,7 @@ class Messages extends React.Component {
 	componentDidUpdate() {
 		animateScroll.scrollToBottom({
 			containerId: 'messageBox',
-			duration: 300
+			duration: 350
 		});
 	}
 
