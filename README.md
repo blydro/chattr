@@ -10,6 +10,7 @@ Chattr
 - [x] include intro message if the log is empty
 - [ ] optimize for mobile
 - [ ] ice server optimization/better init stuff <-- do more testing
+- [ ] loading animation during log import/make it less laggy
 
 ### Backend
 - [ ] disconnect from socket server when necessary!
@@ -20,7 +21,8 @@ Chattr
   - [ ] send files
   - [ ] special commands
   - [ ] read receipts
-- [ ] cleanup names function! *
+- [ ] auto cleanup names! *
+- [ ] auto/maybe manually cleanup log (or at least only send last 50 or so)
 
 =====
 * next release
