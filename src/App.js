@@ -97,7 +97,7 @@ class App extends Component {
 					console.log('peerlist was different, doing some analysis!');
 					for (const peer in message.peerList) {
 						if (this.state.peerIds.indexOf(peer) === -1) {
-							console.log(peer, 'was missing in my list');
+							console.log(peer, 'was missing in my list. requesting connection to' + peer);
 							requestPeer(peer);
 						}
 					}
