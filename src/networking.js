@@ -1,7 +1,7 @@
 import io from 'socket.io-client';
 import Peer from 'simple-peer';
 
-let peers = {};
+const peers = {};
 
 // Const ioId = 'https://blydro-socketio-server.now.sh';
 // Const socket = io(ioId);
@@ -69,7 +69,6 @@ function singleSend(peer, msg) {
 		peers[peer].send(JSON.stringify(msg));
 	} else {
 		console.log('peer %s not open. message not sent', peer);
-		console.log(peers, peer);
 	}
 }
 
@@ -82,15 +81,20 @@ function socketId() {
 	return socket;
 }
 
-function helloAgain() {
+/* This doesn't work for some reason
+const helloAgain = () => {
 	socket.close();
+	Object.entries(peers).forEach(([peerId, peer]) => {
+		peer.destroy();
+		peer = {};
+		delete peers[peerId];
+	});
 	socket.open();
-	peers = {};
-	console.log(peers);
-}
+};
+*/
 
 function requestPeer(peerId) {
 	socket.emit('request', peerId);
 }
 
-export {setupPeers, massSend, singleSend, socketId, helloAgain, requestPeer};
+export {setupPeers, massSend, singleSend, socketId, requestPeer};
