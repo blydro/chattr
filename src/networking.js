@@ -20,7 +20,7 @@ function setupPeers(callbacks, logger) {
 		const peerId = data.peerId;
 		const peer = new Peer({initiator: data.initiator, trickle: true, reconnectTimer: 900});
 
-		logger('Peer available for connection discovered from signaling server, Peer ID: ' + peerId);
+		// NO OMG SO SPAMMY logger('Peer available for connection discovered from signaling server, Peer ID: ' + peerId);
 
 		socket.on('signal', data => {
 			if (data.peerId === peerId) {

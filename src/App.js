@@ -20,10 +20,11 @@ class App extends Component {
 		};
 
 		const connectCallback = peerId => {
+			/* Make everything less annoying
 			setTimeout(() => {
 				this.logger('Peer connection established with ' + this.findName(peerId));
 			}, 1500); // Artificially delay this so the name can appear!
-
+			*/
 			this.setState({
 				peerIds: this.state.peerIds.concat([peerId])
 			});

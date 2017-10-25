@@ -9,13 +9,17 @@ Chattr
 - [ ] socket server disconnect message
 - [x] include intro message if the log is empty
 - [ ] optimize for mobile
-- [ ] ice server optimization/better init stuff <-- figure out what's going on
+- [ ] ice server optimization/better init stuff <-- do more testing
 
 ### Backend
 - [ ] disconnect from socket server when necessary!
-- [ ] check for new clients/messages in background!!! (through webworker <-- socket server only)
-- [ ] make peerlist sending more reliable/not dpeendnet on send
-  - [ ] make peerlist comparision much smarter
+- [ ] check for new clients/messages in background!!! (through webworker <-- socket server only) *
+- [ ] make peerlist sending more reliable/not dpeendnet on send *
+  - [ ] make peerlist comparision much smarter *
 - [ ] fancy chat stuff
   - [ ] send files
   - [ ] special commands
+  - [ ] read receipts
+
+=====
+* next release
