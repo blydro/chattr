@@ -74,6 +74,12 @@ function singleSend(peer, msg) {
 }
 
 function socketId() {
+		// Return either the scoket or an undefined string depending on situation!!
+	console.log(socket);
+	if (socket.disconnected) {
+		return {id: '0'};
+	}
+
 	return socket;
 }
 

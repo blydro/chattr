@@ -142,7 +142,7 @@ class App extends Component {
 		this.setState({
 			log: JSON.parse(localStorage.getItem('log')) || [],
 			names: JSON.parse(localStorage.getItem('names')) || {},
-			peerIds: [],
+			peerIds: socketId().disconnected ? Object.keys(JSON.parse(localStorage.getItem('names'))) : [],  // If we're offline we use the local name database
 			myName: undefined,
 			socket: socketId()
 		});
