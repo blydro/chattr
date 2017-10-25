@@ -19,7 +19,7 @@ class SendBox extends React.Component {
 		return (
 			<div className="sendBox">
 				<form ref={input => this.sendForm = input} onSubmit={e => this.hotlineBling(e)}>
-					<input ref={input => this.message = input} type="text" className="theChosenBox" placeholder={this.props.myName ? '' : 'Choose a new name...'}/>
+					<input ref={input => this.message = input} type="text" className="theChosenBox" disabled={!localStorage.getItem('oldSocketId')} placeholder={this.props.myName ? '' : 'Choose a new name...'}/>
 				</form><br/>
 			</div>
 		);

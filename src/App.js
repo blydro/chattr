@@ -33,12 +33,14 @@ class App extends Component {
 		};
 
 		const socketConnectCallback = () => {
+			this.setState({socket: socketId()}); // Update our socket id once we have one!
+
 			const oldId = localStorage.getItem('oldSocketId') || '';
 			const newId = this.state.socket.id;
 			if (this.state.names[oldId]) {
 				const names = {...this.state.names};
 				names[newId] = names[oldId];
-				delete names[oldId]; // Don't clog everything up? maybe TODO: add a age component to this
+				// Don't delte becuase it makes problems: delete names[oldId]; // Don't clog everything up? maybe TODO: add a age component to this
 				this.setState({names});
 			}
 			localStorage.setItem('oldSocketId', this.state.socket.id);
@@ -146,6 +148,7 @@ class App extends Component {
 			myName: undefined,
 			socket: socketId()
 		});
+
 	}
 
 	componentDidMount() {
@@ -189,6 +192,9 @@ class App extends Component {
 			names
 		});
 
+		console.log(this.state.names);
+		console.log(names);
+
 		massSend({type: 'names', newNames: names});
 
 		if (newName.length > 0) {
@@ -212,7 +218,8 @@ class App extends Component {
 				{this.props.debug === true ?
 					<div className="debugButtons">
 						<button onClick={() => localStorage.setItem('log', '[]')}>reset localstorage log</button>
-						<button onClick={() => localStorage.setItem('names', '[]')}>reset localstorage names</button>
+						<button onClick={() => localStorage.setItem('names', '{}')}>reset localstorage names</button>
+						<button onClick={() => localStorage.setItem('oldSocketId', '')}>reset localstorage oldsocketid</button>
 						<button onClick={() => massSend({type: 'peerList', peerList: this.state.peerIds})}>send peerlist</button>
 					</div> :
 				''}
