@@ -5,6 +5,7 @@ import {animateScroll} from 'react-scroll';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 import LogItem from './LogItem';
+import Onboarding from './Onboarding';
 
 class Messages extends React.Component {
 
@@ -23,6 +24,9 @@ class Messages extends React.Component {
 					<ReactCSSTransitionGroup transitionName="fade" transitionEnterTimeout={1} transitionLeaveTimeout={1}>
 						{
 							this.props.log.map(item => {
+								if (item.type === 'onboarding') {
+									return <Onboarding/>;
+								}
 								return <LogItem key={item.timestamp} msg={item} names={this.props.names}/>;
 							})
 						}

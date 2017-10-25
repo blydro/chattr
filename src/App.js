@@ -149,6 +149,12 @@ class App extends Component {
 			socket: socketId()
 		});
 
+		if (localStorage.getItem('log') === '[]' || !JSON.parse(localStorage.getItem('log'))) { // New Client
+			this.setState({log: [{
+				timestamp: 0,
+				type: 'onboarding'
+			}]});
+		}
 	}
 
 	componentDidMount() {
@@ -191,9 +197,6 @@ class App extends Component {
 		this.setState({
 			names
 		});
-
-		console.log(this.state.names);
-		console.log(names);
 
 		massSend({type: 'names', newNames: names});
 

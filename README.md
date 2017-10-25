@@ -4,8 +4,10 @@ Chattr
 ### UI
 - [x] good looking ui
 - [ ] prettify reset button
-- [ ] don't show ui until we connect to socket server! otherwise things break down real fast (!!!!)
-- [ ] include intro message if the log is empty
+- [x] don't show ui until we connect to socket server! otherwise things break down real fast (!!!!) <-- fixed underlying bug instead
+  - [ ] show failure message when not connected to socket server
+- [ ] socket server disconnect message
+- [x] include intro message if the log is empty
 - [ ] optimize for mobile
 - [ ] ice server optimization/better init stuff <-- figure out what's going on
 
