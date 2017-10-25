@@ -94,17 +94,8 @@ class App extends Component {
 			}
 			case 'peerList': {
 				if (message.peerList.length !== this.state.peerIds.length) {
-					for (const peer in message.peerList) {
-						if (this.state.peerIds.indexOf(peer) === -1) {
-							console.log(peer, 'was missing in my list');
-							console.log(Object.entries(this.state.names));
-							console.log(Object.entries(this.state.names).indexOf(this.findName(peer)));
-						}
-					}
-					if (1 === 2) { // Hell froze over
-						console.log('peerlist was different, reconnecting!');
-						helloAgain();
-					}
+					console.log('peerlist was different, reconnecting!');
+					helloAgain(); // TODO: use requestpeer to only connect to what's nessesary
 				}
 				break;
 			}

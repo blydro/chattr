@@ -15,7 +15,7 @@ Chattr
 - [ ] disconnect from socket server when necessary!
 - [ ] check for new clients/messages in background!!! (through webworker <-- socket server only) *
 - [ ] make peerlist sending more reliable/not dpeendnet on send *
-  - [ ] make peerlist comparision much smarter *
+  - [ ] make peerlist comparision much smarter (compare whether this peer or an older version of it is already connected, who is the latest one, etc)
 - [ ] fancy chat stuff
   - [ ] send files
   - [ ] special commands
