@@ -25,7 +25,7 @@ class Messages extends React.Component {
 						{
 							this.props.log.map(item => {
 								if (item.type === 'onboarding') {
-									return <Onboarding/>;
+									return <Onboarding key={0}/>;
 								}
 								return <LogItem key={item.timestamp} msg={item} names={this.props.names}/>;
 							})
