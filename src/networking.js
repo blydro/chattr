@@ -1,7 +1,7 @@
 import io from 'socket.io-client';
 import Peer from 'simple-peer';
 
-const peers = {};
+let peers = {};
 
 // Const ioId = 'https://blydro-socketio-server.now.sh';
 // Const socket = io(ioId);
@@ -82,4 +82,15 @@ function socketId() {
 	return socket;
 }
 
-export {setupPeers, massSend, singleSend, socketId};
+function helloAgain() {
+	socket.close();
+	socket.open();
+	peers = {};
+	console.log(peers);
+}
+
+function requestPeer(peerId) {
+	socket.emit('request', peerId);
+}
+
+export {setupPeers, massSend, singleSend, socketId, helloAgain, requestPeer};

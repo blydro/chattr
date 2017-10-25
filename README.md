@@ -20,6 +20,7 @@ Chattr
   - [ ] send files
   - [ ] special commands
   - [ ] read receipts
+- [ ] cleanup names function! *
 
 =====
 * next release

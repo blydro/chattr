@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 
-import {setupPeers, massSend, singleSend, socketId} from './networking';
+import {setupPeers, massSend, singleSend, socketId, helloAgain, requestPeer} from './networking';
 
 import SendBox from './components/SendBox';
 import Messages from './components/Messages';
@@ -93,11 +93,18 @@ class App extends Component {
 				break;
 			}
 			case 'peerList': {
-				console.log('my length', this.state.peerIds.length);
-				console.log('its length', message.peerList.length);
-
 				if (message.peerList.length !== this.state.peerIds.length) {
-					window.location.reload();
+					for (const peer in message.peerList) {
+						if (this.state.peerIds.indexOf(peer) === -1) {
+							console.log(peer, 'was missing in my list');
+							console.log(Object.entries(this.state.names));
+							console.log(Object.entries(this.state.names).indexOf(this.findName(peer)));
+						}
+					}
+					if (1 === 2) { // Hell froze over
+						console.log('peerlist was different, reconnecting!');
+						helloAgain();
+					}
 				}
 				break;
 			}
