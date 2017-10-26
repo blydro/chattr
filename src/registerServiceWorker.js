@@ -32,13 +32,16 @@ export default function registerServiceWorker() {
 
 		window.addEventListener('load', () => {
 			const swUrl = `${process.env.PUBLIC_URL}/service-worker.js`;
+			const notiSwUrl = `${process.env.PUBLIC_URL}/sw.js`;
 
 			if (isLocalhost === undefined) {
 				// Is not local host. Just register service worker
 				registerValidSW(swUrl);
+				registerValidSW(notiSwUrl);
 			} else {
 				// This is running on localhost. Lets check if a service worker still exists or not.
 				checkValidServiceWorker(swUrl);
+				checkValidServiceWorker(notiSwUrl);
 			}
 		});
 	}

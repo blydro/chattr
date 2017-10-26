@@ -31,7 +31,6 @@ const measureFileSizesBeforeBuild =
 const printFileSizesAfterBuild = FileSizeReporter.printFileSizesAfterBuild;
 const useYarn = fs.existsSync(paths.yarnLockFile);
 
-const path = require('path');
 const spawn = require('cross-spawn');
 
 // Compile css
