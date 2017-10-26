@@ -20,7 +20,7 @@ const isLocalhost = Boolean(
 );
 
 export default function registerServiceWorker() {
-	if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
+	if (/* process.env.NODE_ENV === 'production' && */'serviceWorker' in navigator) {
 		// The URL constructor is available in all browsers that support SW.
 		const publicUrl = new URL(process.env.PUBLIC_URL, window.location);
 		if (publicUrl.origin !== window.location.origin) {
@@ -48,6 +48,11 @@ function registerValidSW(swUrl) {
 	navigator.serviceWorker
 		.register(swUrl)
 		.then(registration => {
+			// Notifications
+			console.log('i should exist every time');
+			setInterval(() => console.log('woo'), 5000);
+
+			// Update Checking
 			registration.onupdatefound = () => {
 				const installingWorker = registration.installing;
 				installingWorker.onstatechange = () => {
@@ -108,14 +113,14 @@ export function unregister() {
 	}
 }
 
-export function showNotification() {
+export function showNotification(username) {
 	Notification.requestPermission(result => {
 		if (result === 'granted') {
 			navigator.serviceWorker.ready.then(registration => {
-				registration.showNotification('Vibration Sample', {
-					body: 'Buzz! Buzz!',
-					vibrate: [200, 100, 200, 100, 200, 100, 200],
-					tag: 'vibration-sample'
+				registration.showNotification(username + ' came online!', {
+					body: 'Click to chat!',
+					vibrate: [300, 300, 200, 200, 200, 100, 100],
+					tag: 'Chattr'
 				});
 			});
 		}
