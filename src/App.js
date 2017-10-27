@@ -49,6 +49,8 @@ class App extends Component {
 			this.setState({
 				peerIds: this.state.peerIds.concat([this.state.socket.id])
 			});
+
+			this.state.socket.emit('ready', this.findName(this.state.socket.id));
 		};
 
 		const disconnectCallback = peerId => {

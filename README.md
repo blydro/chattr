@@ -11,18 +11,20 @@ Chattr
 - [ ] optimize for mobile
 - [ ] ice server optimization/better init stuff <-- do more testing
 - [ ] loading animation during log import/make it less laggy
+- [ ] SORT LOG BY DATE
 
 ### Backend
 - [ ] disconnect from socket server when necessary!
-- [ ] check for new clients/messages in background!!! (through webworker <-- socket server only) *
-- [ ] make peerlist sending more reliable/not dpeendnet on send *
+- [x] check for new clients/messages in background!!! (through webworker <-- socket server only) *
+- [ ] make peerlist sending more reliable/not dpeendnet on send
   - [ ] make peerlist comparision much smarter (compare whether this peer or an older version of it is already connected, who is the latest one, etc)
 - [ ] fancy chat stuff
   - [ ] send files
   - [ ] special commands
   - [ ] read receipts
+  - [ ] typing indicator
 - [ ] auto cleanup names! *
-- [ ] auto/maybe manually cleanup log (or at least only send last 50 or so)
+- [ ] auto/maybe manually cleanup log/names (or at least only send last 50 or so)
 
 =====
 * next release

@@ -38,13 +38,15 @@ export default function registerServiceWorker() {
 				// Is not local host. Just register service worker
 				registerValidSW(swUrl);
 				registerValidSW(notiSwUrl);
-			} else {
+ 			} else {
 				// This is running on localhost. Lets check if a service worker still exists or not.
 				checkValidServiceWorker(swUrl);
 				checkValidServiceWorker(notiSwUrl);
 			}
 		});
 	}
+
+	showNotification('you'); // Secretly ask for notifaction permission
 }
 
 function registerValidSW(swUrl) {
