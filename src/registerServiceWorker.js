@@ -51,10 +51,6 @@ function registerValidSW(swUrl) {
 	navigator.serviceWorker
 		.register(swUrl)
 		.then(registration => {
-			// Notifications
-			console.log('i should exist every time');
-			setInterval(() => console.log('woo'), 5000);
-
 			// Update Checking
 			registration.onupdatefound = () => {
 				const installingWorker = registration.installing;

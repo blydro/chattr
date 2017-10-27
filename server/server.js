@@ -37,7 +37,7 @@ io.on('connection', socket => {
 		});
 	});
 
-	// THis should be abscratced a bit/removed as it's not currently used TODO
+	// Reconnect peers if they disconnect
 	socket.on('request', socketId => {
 		console.log('Rescuing', socketId);
 		socket.emit('peer', {
