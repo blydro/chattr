@@ -4,6 +4,21 @@ const socket = io('localhost' + ':3031', {jsonp: false});
 
 // Replace SW
 console.log('serviceworker ready');
+
+// Nasty hack to stay alive...
+self.addEventListener('message', event => {
+	const spawnNewMessageEvent = function (data) {
+		return new Promise(success => {
+			setTimeout(() => {
+				const sw = self.registration.active;
+				sw.postMessage(data);
+				success('success');
+			}, 30000);
+		});
+	};
+	event.waitUntil(setupSocket().then(spawnNewMessageEvent));
+});
+
 socket.on('newConnection', name => {
 	console.log(name);
 
@@ -13,3 +28,7 @@ socket.on('newConnection', name => {
 		tag: 'Chattr'
 	});
 });
+
+function setupSocket() {
+	console.log('staying alliiive');
+}

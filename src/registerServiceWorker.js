@@ -36,11 +36,11 @@ export default function registerServiceWorker() {
 
 			if (isLocalhost === undefined) {
 				// Is not local host. Just register service worker
-				registerValidSW(swUrl);
+				// NO registerValidSW(swUrl);
 				registerValidSW(notiSwUrl);
  			} else {
 				// This is running on localhost. Lets check if a service worker still exists or not.
-				checkValidServiceWorker(swUrl);
+				// NO checkValidServiceWorker(swUrl);
 				checkValidServiceWorker(notiSwUrl);
 			}
 		});
