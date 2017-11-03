@@ -3,7 +3,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import App from './App';
-import registerServiceWorker, {showNotification} from './registerServiceWorker';
+import registerServiceWorker from './registerServiceWorker';
 
-ReactDOM.render(<App debug={false} showNotification={showNotification}/>, document.getElementById('root'));
-// Not for now.... registerServiceWorker();
+ReactDOM.render(<App debug={false}/>, document.getElementById('root'));
+registerServiceWorker();

@@ -2,20 +2,22 @@ Chattr
 ==============
 
 ### UI
-- [x] good looking ui
 - [ ] prettify reset button
-- [x] don't show ui until we connect to socket server! otherwise things break down real fast (!!!!) <-- fixed underlying bug instead
+- [x] work without a socket server
   - [ ] show failure message when not connected to socket server
-- [ ] socket server disconnect message
+- [ ] socket server disconnect message?
 - [x] include intro message if the log is empty
+  - [ ] fix intro message
 - [ ] optimize for mobile
 - [ ] ice server optimization/better init stuff <-- do more testing
 - [ ] loading animation during log import/make it less laggy
 - [ ] SORT LOG BY DATE
 
+- [ ] Add https://tailwindcss.com/docs/examples/cards <-- perfect for this project
+
 ### Backend
 - [ ] disconnect from socket server when necessary!
-- [x] check for new clients/messages in background!!! (through webworker <-- socket server only) *
+- [ ] push notifications from server.js
 - [ ] make peerlist sending more reliable/not dpeendnet on send
   - [ ] make peerlist comparision much smarter (compare whether this peer or an older version of it is already connected, who is the latest one, etc)
 - [ ] fancy chat stuff
@@ -25,6 +27,4 @@ Chattr
   - [ ] typing indicator
 - [ ] auto cleanup names! *
 - [ ] auto/maybe manually cleanup log/names (or at least only send last 50 or so)
-
-=====
-* next release
+- [ ] remove/optimize componentDidMount (devcheetsheets)

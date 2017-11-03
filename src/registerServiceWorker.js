@@ -19,8 +19,8 @@ const isLocalhost = Boolean(
 		)
 );
 
-export default function registerServiceWorker() {
-	if (/* process.env.NODE_ENV === 'production' && */'serviceWorker' in navigator) {
+export default function register() {
+	if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
 		// The URL constructor is available in all browsers that support SW.
 		const publicUrl = new URL(process.env.PUBLIC_URL, window.location);
 		if (publicUrl.origin !== window.location.origin) {
@@ -32,28 +32,22 @@ export default function registerServiceWorker() {
 
 		window.addEventListener('load', () => {
 			const swUrl = `${process.env.PUBLIC_URL}/service-worker.js`;
-			const notiSwUrl = `${process.env.PUBLIC_URL}/sw.js`;
 
 			if (isLocalhost === undefined) {
 				// Is not local host. Just register service worker
-				// NO registerValidSW(swUrl);
-				registerValidSW(notiSwUrl);
- 			} else {
+				registerValidSW(swUrl);
+			} else {
 				// This is running on localhost. Lets check if a service worker still exists or not.
-				// NO checkValidServiceWorker(swUrl);
-				checkValidServiceWorker(notiSwUrl);
+				checkValidServiceWorker(swUrl);
 			}
 		});
 	}
-
-	showNotification('you'); // Secretly ask for notifaction permission
 }
 
 function registerValidSW(swUrl) {
 	navigator.serviceWorker
 		.register(swUrl)
 		.then(registration => {
-			// Update Checking
 			registration.onupdatefound = () => {
 				const installingWorker = registration.installing;
 				installingWorker.onstatechange = () => {
@@ -112,18 +106,4 @@ export function unregister() {
 			registration.unregister();
 		});
 	}
-}
-
-export function showNotification(username) {
-	Notification.requestPermission(result => {
-		if (result === 'granted') {
-			navigator.serviceWorker.ready.then(registration => {
-				registration.showNotification(username + ' came online!', {
-					body: 'Click to chat!',
-					vibrate: [300, 300, 200, 200, 200, 100, 100],
-					tag: 'Chattr'
-				});
-			});
-		}
-	});
 }

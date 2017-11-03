@@ -244,8 +244,7 @@ class App extends Component {
 }
 
 App.propTypes = {
-	debug: PropTypes.bool.isRequired,
-	showNotification: PropTypes.func.isRequired
+	debug: PropTypes.bool.isRequired
 };
 
 export default App;
