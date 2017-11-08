@@ -1,8 +1,6 @@
 const server = require('http').createServer();
-const swServer = require('http').createServer();
 const _ = require('lodash');
 const io = require('socket.io')(server, {origins: '*:*'});
-const sw = require('socket.io')(swServer, {origins: '*:*'});
 
 io.on('connection', socket => {
 	console.log('Connection with ID:', socket.id);
@@ -48,18 +46,8 @@ io.on('connection', socket => {
 
 	socket.on('ready', name => {
 		console.log(name + ' is ready!');
-		sw.sockets.emit('newConnection', name);
-	});
-});
-
-sw.on('connection', socket => {
-	console.log('service worker connection: ', socket.id);
-	socket.on('test', () => {
-		console.log('got a test!');
-		socket.emit('hi', 'you');
 	});
 });
 
 server.listen(3030);
-swServer.listen(3031);
-console.log('listening on 3030, 3031');
+console.log('listening on 3030');
