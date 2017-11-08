@@ -1,6 +1,16 @@
 const server = require('http').createServer();
 const _ = require('lodash');
 const io = require('socket.io')(server, {origins: '*:*'});
+const webpush = require('web-push');
+
+webpush.setGCMAPIKey('AIzaSyDeMtcKL8N6hDVQ1G4EjM-_INtMlrWw5iM');
+webpush.setVapidDetails(
+  'mailto:complaints@blydro.com',
+  'BHvaHNKBtoPaL9TDXPoq_ajrtsD7mb_WS5waGFrar6J3_l7PyP6M99flKdtFSa0uhp6YvhUzHvaArvvtlTxk8wM',
+  '0G2JQczLojObtSmouP4XzvEo542tfw1xMzNcoZPnEbM'
+);
+
+const subscriptions = [];
 
 io.on('connection', socket => {
 	console.log('Connection with ID:', socket.id);
@@ -44,10 +54,22 @@ io.on('connection', socket => {
 		});
 	});
 
+	// Receive subscription data
+	socket.on('subscription', data => {
+		subscriptions.push(data);
+	});
+
 	socket.on('ready', name => {
 		console.log(name + ' is ready!');
+		massPush(name);
 	});
 });
+
+function massPush(message) {
+	for (let i = 0; i < subscriptions.length; i++) {
+		webpush.sendNotification(JSON.parse(subscriptions[i]), message);
+	}
+}
 
 server.listen(3030);
 console.log('listening on 3030');

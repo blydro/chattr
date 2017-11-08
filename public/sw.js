@@ -3,9 +3,9 @@ self.addEventListener('push', event => {
 	console.log('[Service Worker] Push Received.');
 	console.log(`[Service Worker] Push had this data: "${event.data.text()}"`);
 
-	const title = 'Push Codelab';
+	const title = event.data.text() + ' came online!';
 	const options = {
-		body: 'Yay it works.',
+		body: 'Click to chat',
 		icon: 'images/icon.png',
 		badge: 'images/badge.png'
 	};

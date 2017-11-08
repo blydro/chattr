@@ -1,5 +1,6 @@
 import io from 'socket.io-client';
 import Peer from 'simple-peer';
+import urlB64ToUint8Array from './helpers';
 
 const peers = {};
 
@@ -95,6 +96,48 @@ const helloAgain = () => {
 
 function requestPeer(peerId) {
 	socket.emit('request', peerId);
+}
+
+// Service Worker Helper stuff
+// From https://developers.google.com/web/fundamentals/codelabs/push-notifications/
+const applicationServerPublicKey = 'BHvaHNKBtoPaL9TDXPoq_ajrtsD7mb_WS5waGFrar6J3_l7PyP6M99flKdtFSa0uhp6YvhUzHvaArvvtlTxk8wM';
+
+let swRegistration = null;
+
+// Register service worker for push notifcations
+// From https://developers.google.com/web/fundamentals/codelabs/push-notifications/
+if ('serviceWorker' in navigator && 'PushManager' in window) {
+	console.log('Service Worker and Push is supported');
+
+	navigator.serviceWorker.register('sw.js')
+	.then(swReg => {
+		console.log('Service Worker is registered', swReg);
+
+		swRegistration = swReg;
+		subscribeUser();
+	})
+	.catch(err => {
+		console.error('Service Worker Error', err);
+	});
+} else {
+	console.warn('Push messaging is not supported');
+}
+
+function subscribeUser() {
+	const applicationServerKey = urlB64ToUint8Array(applicationServerPublicKey);
+	swRegistration.pushManager.subscribe({
+		userVisibleOnly: true,
+		applicationServerKey
+	})
+  .then(subscription => {
+	console.log('User is subscribed.');
+
+	// Send subscription to server
+	socket.emit('subscription', JSON.stringify(subscription));
+})
+  .catch(err => {
+	console.log('Failed to subscribe the user: ', err);
+});
 }
 
 export {setupPeers, massSend, singleSend, socketId, requestPeer};
