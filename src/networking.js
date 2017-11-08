@@ -125,6 +125,7 @@ if ('serviceWorker' in navigator && 'PushManager' in window) {
 
 function subscribeUser() {
 	const applicationServerKey = urlB64ToUint8Array(applicationServerPublicKey);
+	console.log(swRegistration.pushManager)
 	swRegistration.pushManager.subscribe({
 		userVisibleOnly: true,
 		applicationServerKey
