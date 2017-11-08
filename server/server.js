@@ -66,8 +66,9 @@ io.on('connection', socket => {
 });
 
 function massPush(message) {
-	for (let i = 0; i < subscriptions.length; i++) {
-		webpush.sendNotification(JSON.parse(subscriptions[i]), message);
+  // Don't include the latest!
+	for (let i = 0; i < subscriptions.length - 1; i++) {
+		webpush.sendNotification(JSON.parse(subscriptions[i]), message, {TTL: 30});
 	}
 }
 

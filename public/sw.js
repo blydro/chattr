@@ -19,6 +19,6 @@ self.addEventListener('notificationclick', event => {
 	event.notification.close();
 
 	event.waitUntil(
-    clients.openWindow('https://developers.google.com/web/')
+    clients.openWindow(self.registration.scope)
   );
 });

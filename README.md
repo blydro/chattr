@@ -17,7 +17,7 @@ Chattr
 
 ### Backend
 - [ ] disconnect from socket server when necessary!
-- [ ] push notifications from server.js
+- [x] push notifications from server.js
 - [ ] make peerlist sending more reliable/not dpeendnet on send
   - [ ] make peerlist comparision much smarter (compare whether this peer or an older version of it is already connected, who is the latest one, etc)
 - [ ] fancy chat stuff
