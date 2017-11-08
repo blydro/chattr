@@ -10,7 +10,8 @@ webpush.setVapidDetails(
   '0G2JQczLojObtSmouP4XzvEo542tfw1xMzNcoZPnEbM'
 );
 
-const subscriptions = [];
+// eslint-disable-next-line
+let subscriptions = [];
 
 io.on('connection', socket => {
 	console.log('Connection with ID:', socket.id);
@@ -67,8 +68,15 @@ io.on('connection', socket => {
 
 function massPush(message) {
   // Don't include the latest!
-	for (let i = 0; i < subscriptions.length - 1; i++) {
-		webpush.sendNotification(JSON.parse(subscriptions[i]), message, {TTL: 30});
+	for (const sub in subscriptions) {
+		if (sub === 'wtf') {
+			console.log('temp');
+		}
+
+		console.log(sub);
+		webpush.sendNotification(JSON.parse(sub), message, {TTL: 30}).catch(err => {
+			console.warn('Failed to push:', err);
+		});
 	}
 }
 

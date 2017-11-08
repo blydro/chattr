@@ -125,20 +125,27 @@ if ('serviceWorker' in navigator && 'PushManager' in window) {
 
 function subscribeUser() {
 	const applicationServerKey = urlB64ToUint8Array(applicationServerPublicKey);
-	console.log(swRegistration.pushManager)
-	swRegistration.pushManager.subscribe({
-		userVisibleOnly: true,
-		applicationServerKey
-	})
-  .then(subscription => {
-	console.log('User is subscribed.');
+	swRegistration.pushManager.getSubscription().then(sub => {
+		if (sub === null) {
+			swRegistration.pushManager.subscribe({
+				userVisibleOnly: true,
+				applicationServerKey
+			})
+			.then(subscription => {
+				console.log('User is subscribed.');
 
-	// Send subscription to server
-	socket.emit('subscription', JSON.stringify(subscription));
-})
-  .catch(err => {
-	console.log('Failed to subscribe the user: ', err);
-});
+				// Send subscription to server
+				socket.emit('subscription', JSON.stringify(subscription));
+			})
+			.catch(err => {
+				console.log('Failed to subscribe the user: ', err);
+			});
+		} else {
+			console.log('Not subscribing, already subscribed!', sub);
+			// Send subscription to server
+			socket.emit('subscription', JSON.stringify(sub));
+		}
+	});
 }
 
 export {setupPeers, massSend, singleSend, socketId, requestPeer};
