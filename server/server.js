@@ -73,7 +73,7 @@ io.on('connection', socket => {
 function massPush(message) {
 	for (let i = 0; i < subscriptions.length; i++) {
 		webpush.sendNotification(JSON.parse(subscriptions[i]), message, {TTL: 30}).catch(err => {
-			console.warn('Failed to push:', err);
+			console.warn('Failed to push with status code', err.statusCode);
 		});
 	}
 }
