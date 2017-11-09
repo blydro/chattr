@@ -17,6 +17,42 @@ function setupPeers(callbacks, logger) {
 		callbacks.socketConnectCallback();
 	});
 
+	// Subscription stuff
+	socket.on('publickey', jsonedPublickey => {
+		const publickey = JSON.parse(jsonedPublickey);
+		console.log('publickey!', publickey);
+		// Register service worker for push notifcations
+		// From https://developers.google.com/web/fundamentals/codelabs/push-notifications/
+		if ('serviceWorker' in navigator && 'PushManager' in window) {
+			console.log('Service Worker and Push is supported');
+
+			navigator.serviceWorker.register('sw.js')
+			.then(swReg => {
+				console.log('Service Worker is registered', swReg);
+			})
+			.catch(err => {
+				console.error('Service Worker Error', err);
+			});
+			navigator.serviceWorker.ready.then(reg => {
+				reg.pushManager.getSubscription().then(subscription => {
+					if (subscription !== null) {
+						subscription.unsubscribe().then(() => {
+							// Subscribe to new subscription
+							subscribeUser(reg, publickey);
+						}).catch(err => {
+							// Unsubscription failed
+							console.warn('Failed to unsubscribe old subscrption!', err);
+						});
+					} else {
+						subscribeUser(reg, publickey);
+					}
+				});
+			});
+		} else {
+			console.warn('Push messaging is not supported');
+		}
+	});
+
 	socket.on('peer', data => {
 		const peerId = data.peerId;
 		const peer = new Peer({initiator: data.initiator, trickle: true, reconnectTimer: 900});
@@ -98,39 +134,12 @@ function requestPeer(peerId) {
 	socket.emit('request', peerId);
 }
 
-// Service Worker Helper stuff
-// From https://developers.google.com/web/fundamentals/codelabs/push-notifications/
-const applicationServerPublicKey = 'BHvaHNKBtoPaL9TDXPoq_ajrtsD7mb_WS5waGFrar6J3_l7PyP6M99flKdtFSa0uhp6YvhUzHvaArvvtlTxk8wM';
-
-let swRegistration = null;
-
-// Register service worker for push notifcations
-// From https://developers.google.com/web/fundamentals/codelabs/push-notifications/
-if ('serviceWorker' in navigator && 'PushManager' in window) {
-	console.log('Service Worker and Push is supported');
-
-	navigator.serviceWorker.register('sw.js')
-	.then(swReg => {
-		console.log('Service Worker is registered', swReg);
-
-		swRegistration = swReg;
-		subscribeUser();
-	})
-	.catch(err => {
-		console.error('Service Worker Error', err);
-	});
-} else {
-	console.warn('Push messaging is not supported');
-}
-
-function subscribeUser() {
+function subscribeUser(swRegistration, applicationServerPublicKey) {
 	const applicationServerKey = urlB64ToUint8Array(applicationServerPublicKey);
-	swRegistration.pushManager.getSubscription().then(sub => {
-		if (sub === null) {
-			swRegistration.pushManager.subscribe({
-				userVisibleOnly: true,
-				applicationServerKey
-			})
+	swRegistration.pushManager.subscribe({
+		userVisibleOnly: true,
+		applicationServerKey
+	})
 			.then(subscription => {
 				console.log('User is subscribed.');
 
@@ -140,12 +149,6 @@ function subscribeUser() {
 			.catch(err => {
 				console.log('Failed to subscribe the user: ', err);
 			});
-		} else {
-			console.log('Not subscribing, already subscribed!', sub);
-			// Send subscription to server
-			socket.emit('subscription', JSON.stringify(sub));
-		}
-	});
 }
 
 export {setupPeers, massSend, singleSend, socketId, requestPeer};

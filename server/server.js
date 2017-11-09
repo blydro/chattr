@@ -3,11 +3,12 @@ const _ = require('lodash');
 const io = require('socket.io')(server, {origins: '*:*'});
 const webpush = require('web-push');
 
+const vapidKeys = webpush.generateVAPIDKeys();
 webpush.setGCMAPIKey('AIzaSyDeMtcKL8N6hDVQ1G4EjM-_INtMlrWw5iM');
 webpush.setVapidDetails(
   'mailto:complaints@blydro.com',
-  'BHvaHNKBtoPaL9TDXPoq_ajrtsD7mb_WS5waGFrar6J3_l7PyP6M99flKdtFSa0uhp6YvhUzHvaArvvtlTxk8wM',
-  '0G2JQczLojObtSmouP4XzvEo542tfw1xMzNcoZPnEbM'
+  vapidKeys.publicKey,
+  vapidKeys.privateKey
 );
 
 // eslint-disable-next-line
@@ -15,6 +16,7 @@ let subscriptions = [];
 
 io.on('connection', socket => {
 	console.log('Connection with ID:', socket.id);
+
 	const peersToAdvertise = _.chain(io.sockets.connected)
 		.values()
 		.without(socket)
@@ -61,20 +63,16 @@ io.on('connection', socket => {
 	});
 
 	socket.on('ready', name => {
-		console.log(name + ' is ready!');
+		console.log(name + ' is ready! Sending publickey');
 		massPush(name);
+
+		socket.emit('publickey', JSON.stringify(vapidKeys.publicKey));
 	});
 });
 
 function massPush(message) {
-  // Don't include the latest!
-	for (const sub in subscriptions) {
-		if (sub === 'wtf') {
-			console.log('temp');
-		}
-
-		console.log(sub);
-		webpush.sendNotification(JSON.parse(sub), message, {TTL: 30}).catch(err => {
+	for (let i = 0; i < subscriptions.length; i++) {
+		webpush.sendNotification(JSON.parse(subscriptions[i]), message, {TTL: 30}).catch(err => {
 			console.warn('Failed to push:', err);
 		});
 	}
