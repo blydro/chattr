@@ -81,6 +81,10 @@ class App extends Component {
 				this.addMessage(message);
 				break;
 			}
+			case 'typing': {
+				console.log('somebodys typing?', message.typing);
+				break;
+			}
 			case 'names': {
 				const names = {...this.state.names, ...message.newNames};
 				this.setState({names});
@@ -152,7 +156,8 @@ class App extends Component {
 			names: JSON.parse(localStorage.getItem('names')) || {},
 			peerIds: [],
 			myName: undefined,
-			socket: socketId()
+			socket: socketId(),
+			typing: false
 		});
 
 		if (localStorage.getItem('log') === '[]' || !JSON.parse(localStorage.getItem('log'))) { // New Client
@@ -215,8 +220,28 @@ class App extends Component {
 		}
 	}
 
-	allDoneTyping() {
-		console.log('the typig is done');
+	// eslint-disable-next-line no-undef
+	allDoneTyping = () => {
+		this.setState({
+			typing: false
+		});
+		massSend({
+			type: 'typing',
+			typing: false
+		});
+	}
+
+	// eslint-disable-next-line no-undef
+	typeOccured = () => {
+		if (this.state.typing === false) {
+			massSend({
+				type: 'typing',
+				typing: true
+			});
+		}
+		this.setState({
+			typing: true
+		});
 	}
 
 	render() {
@@ -229,6 +254,7 @@ class App extends Component {
 						setName={this.sayMyNameSayMyName}
 						myName={this.state.names[this.state.socket.id]}
 						doneTyping={_.debounce(this.allDoneTyping, 500)}
+						typeOccured={this.typeOccured}
 					/>
 				</div>
 

@@ -6,6 +6,7 @@ class SendBox extends React.Component {
 	hotlineBling(event) {
 		event.preventDefault();
 
+		// Either set the name or send a message depending on props
 		if (this.props.myName) {
 			this.props.sendMessage(this.message.value);
 		} else {
@@ -19,6 +20,7 @@ class SendBox extends React.Component {
 		event.preventDefault();
 
 		console.log('typing typigin typing');
+		this.props.typeOccured();
 		this.props.doneTyping();
 	}
 
@@ -32,7 +34,7 @@ class SendBox extends React.Component {
 						className="theChosenBox"
 						disabled={!localStorage.getItem('oldSocketId')}
 						placeholder={this.props.myName ? '' : 'Choose a new name...'}
-						onChange={e => this.youveChangedMan(e)}
+						onKeyUp={e => this.youveChangedMan(e)}
 					/>
 				</form><br/>
 			</div>
@@ -44,7 +46,8 @@ SendBox.propTypes = {
 	sendMessage: PropTypes.func.isRequired,
 	setName: PropTypes.func.isRequired,
 	myName: PropTypes.string,
-	doneTyping: PropTypes.func.isRequired
+	doneTyping: PropTypes.func.isRequired,
+	typeOccured: PropTypes.func.isRequired
 };
 
 SendBox.defaultProps = {
