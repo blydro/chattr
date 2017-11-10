@@ -215,12 +215,21 @@ class App extends Component {
 		}
 	}
 
+	allDoneTyping() {
+		console.log('the typig is done');
+	}
+
 	render() {
 		return (
 			<div className="App">
 				<div className="interface">
 					<Messages log={this.state.log} names={this.state.names}/>
-					<SendBox sendMessage={this.massTextBootyCall} setName={this.sayMyNameSayMyName} myName={this.state.names[this.state.socket.id]}/>
+					<SendBox
+						sendMessage={this.massTextBootyCall}
+						setName={this.sayMyNameSayMyName}
+						myName={this.state.names[this.state.socket.id]}
+						doneTyping={_.debounce(this.allDoneTyping, 500)}
+					/>
 				</div>
 
 				<br/>

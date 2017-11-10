@@ -15,11 +15,25 @@ class SendBox extends React.Component {
 		this.sendForm.reset();
 	}
 
+	youveChangedMan(event) {
+		event.preventDefault();
+
+		console.log('typing typigin typing');
+		this.props.doneTyping();
+	}
+
 	render() {
 		return (
 			<div className="sendBox">
 				<form ref={input => this.sendForm = input} onSubmit={e => this.hotlineBling(e)}>
-					<input ref={input => this.message = input} type="text" className="theChosenBox" disabled={!localStorage.getItem('oldSocketId')} placeholder={this.props.myName ? '' : 'Choose a new name...'}/>
+					<input
+						ref={input => this.message = input}
+						type="text"
+						className="theChosenBox"
+						disabled={!localStorage.getItem('oldSocketId')}
+						placeholder={this.props.myName ? '' : 'Choose a new name...'}
+						onChange={e => this.youveChangedMan(e)}
+					/>
 				</form><br/>
 			</div>
 		);
@@ -29,7 +43,8 @@ class SendBox extends React.Component {
 SendBox.propTypes = {
 	sendMessage: PropTypes.func.isRequired,
 	setName: PropTypes.func.isRequired,
-	myName: PropTypes.string
+	myName: PropTypes.string,
+	doneTyping: PropTypes.func.isRequired
 };
 
 SendBox.defaultProps = {
