@@ -257,7 +257,6 @@ class App extends Component {
 						sendMessage={this.massTextBootyCall}
 						setName={this.sayMyNameSayMyName}
 						myName={this.state.names[this.state.socket.id]}
-						doneTyping={_.debounce(this.allDoneTyping, 500)}
 						typeOccured={_.debounce(this.typeOccured, 100)}
 					/>
 				</div>
