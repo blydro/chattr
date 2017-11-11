@@ -239,7 +239,7 @@ class App extends Component {
 			type: 'typing',
 			typing: false
 		});
-	}, 600)
+	}, 300)
 
 	// eslint-disable-next-line no-undef
 	typeOccured = () => {
