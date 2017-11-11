@@ -16,14 +16,6 @@ class SendBox extends React.Component {
 		this.sendForm.reset();
 	}
 
-	youveChangedMan(event) {
-		event.preventDefault();
-
-		console.log('typing typigin typing');
-		this.props.typeOccured();
-		this.props.doneTyping();
-	}
-
 	render() {
 		return (
 			<div className="sendBox">
@@ -34,7 +26,7 @@ class SendBox extends React.Component {
 						className="theChosenBox"
 						disabled={!localStorage.getItem('oldSocketId')}
 						placeholder={this.props.myName ? '' : 'Choose a new name...'}
-						onKeyUp={e => this.youveChangedMan(e)}
+						onKeyUp={() => this.props.typeOccured()}
 					/>
 				</form><br/>
 			</div>
@@ -46,7 +38,6 @@ SendBox.propTypes = {
 	sendMessage: PropTypes.func.isRequired,
 	setName: PropTypes.func.isRequired,
 	myName: PropTypes.string,
-	doneTyping: PropTypes.func.isRequired,
 	typeOccured: PropTypes.func.isRequired
 };
 

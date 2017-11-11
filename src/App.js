@@ -221,7 +221,9 @@ class App extends Component {
 	}
 
 	// eslint-disable-next-line no-undef
-	allDoneTyping = () => {
+	allDoneTyping = _.debounce(() => {
+		console.log('typing OVER');
+
 		this.setState({
 			typing: false
 		});
@@ -229,7 +231,7 @@ class App extends Component {
 			type: 'typing',
 			typing: false
 		});
-	}
+	}, 600)
 
 	// eslint-disable-next-line no-undef
 	typeOccured = () => {
@@ -242,6 +244,8 @@ class App extends Component {
 		this.setState({
 			typing: true
 		});
+
+		this.allDoneTyping();
 	}
 
 	render() {
@@ -254,7 +258,7 @@ class App extends Component {
 						setName={this.sayMyNameSayMyName}
 						myName={this.state.names[this.state.socket.id]}
 						doneTyping={_.debounce(this.allDoneTyping, 500)}
-						typeOccured={this.typeOccured}
+						typeOccured={_.debounce(this.typeOccured, 100)}
 					/>
 				</div>
 
