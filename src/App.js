@@ -82,7 +82,16 @@ class App extends Component {
 				break;
 			}
 			case 'typing': {
-				console.log('somebodys typing?', message.typing);
+				const typers = this.state.typers;
+				const sender = this.findName(message.sender);
+
+				if (message.typing === true) {
+					typers.push(sender);
+				} else {
+					_.pull(typers, sender);
+				}
+
+				this.setState({typers});
 				break;
 			}
 			case 'names': {
@@ -157,7 +166,8 @@ class App extends Component {
 			peerIds: [],
 			myName: undefined,
 			socket: socketId(),
-			typing: false
+			typing: false,
+			typers: []
 		});
 
 		if (localStorage.getItem('log') === '[]' || !JSON.parse(localStorage.getItem('log'))) { // New Client
@@ -222,8 +232,6 @@ class App extends Component {
 
 	// eslint-disable-next-line no-undef
 	allDoneTyping = _.debounce(() => {
-		console.log('typing OVER');
-
 		this.setState({
 			typing: false
 		});
@@ -252,7 +260,7 @@ class App extends Component {
 		return (
 			<div className="App">
 				<div className="interface">
-					<Messages log={this.state.log} names={this.state.names}/>
+					<Messages log={this.state.log} names={this.state.names} typers={this.state.typers}/>
 					<SendBox
 						sendMessage={this.massTextBootyCall}
 						setName={this.sayMyNameSayMyName}

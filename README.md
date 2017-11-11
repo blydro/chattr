@@ -24,7 +24,8 @@ Chattr
   - [ ] send files
   - [ ] special commands
   - [ ] read receipts
-  - [ ] typing indicator
-- [ ] auto cleanup names! *
+  - [x] typing indicator
+    - [ ] fix typing indicator to be less sensitive --> more of a bounce
+- [ ] auto cleanup names + log! *
 - [ ] auto/maybe manually cleanup log/names (or at least only send last 50 or so)
 - [ ] remove/optimize componentDidMount (devcheetsheets)

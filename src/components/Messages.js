@@ -30,7 +30,13 @@ class Messages extends React.Component {
 								return <LogItem key={item.timestamp} msg={item} names={this.props.names}/>;
 							})
 						}
+						{
+							this.props.typers.map(item => {
+								return (<LogItem key={Date.now()} msg={{type: 'typing', msg: item + ' is typing'}}/>);
+							})
+						}
 					</ReactCSSTransitionGroup>
+
 				</ul>
 			</div>
 		);
@@ -39,7 +45,8 @@ class Messages extends React.Component {
 
 Messages.propTypes = {
 	log: PropTypes.array.isRequired,
-	names: PropTypes.object.isRequired
+	names: PropTypes.object.isRequired,
+	typers: PropTypes.array.isRequired
 };
 
 export default Messages;
