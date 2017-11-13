@@ -83,7 +83,7 @@ class App extends Component {
 			}
 			case 'typing': {
 				const typers = this.state.typers;
-				const sender = this.findName(message.sender);
+				const sender = message.sender;
 
 				if (message.typing === true) {
 					typers.push(sender);
@@ -263,7 +263,7 @@ class App extends Component {
 		return (
 			<div className="App">
 				<div className="interface">
-					<Messages log={this.state.log} names={this.state.names} typers={this.state.typers}/>
+					<Messages log={this.state.log} names={this.state.names}/>
 					<SendBox
 						sendMessage={this.massTextBootyCall}
 						setName={this.sayMyNameSayMyName}
@@ -284,7 +284,7 @@ class App extends Component {
 
 				<header className="App-header">
 					<h1 className="App-title"><span className="fancy">Chattr</span></h1>
-					<OnlineList peers={this.state.peerIds} findName={this.findName} setName={this.sayMyNameSayMyName} me={this.state.socket.id}/>
+					<OnlineList peers={this.state.peerIds} findName={this.findName} setName={this.sayMyNameSayMyName} me={this.state.socket.id} typers={this.state.typers}/>
 				</header>
 
 			</div>
