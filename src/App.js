@@ -283,7 +283,7 @@ class App extends Component {
 				''}
 
 				<header className="App-header">
-					<h1 className="App-title"><span className="fancy">Chattr</span></h1>
+					<h1 className="App-title"><span className="fancy">Bermun</span></h1>
 					<OnlineList peers={this.state.peerIds} findName={this.findName} setName={this.sayMyNameSayMyName} me={this.state.socket.id} typers={this.state.typers}/>
 				</header>
 

@@ -6,7 +6,7 @@ class OnlineList extends React.Component {
 	render() {
 		return (
 			<div className="onlineList">
-				whos online:
+				online:
 				<ul>
 					{
 						this.props.peers.map(peerId => {
