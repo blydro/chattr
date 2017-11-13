@@ -242,7 +242,10 @@ class App extends Component {
 	}, 300)
 
 	// eslint-disable-next-line no-undef
-	typeOccured = () => {
+	typeOccured = myName => {
+		if (myName === undefined) {
+			return; // Don't indicate typing if typing a name!
+		}
 		if (this.state.typing === false) {
 			massSend({
 				type: 'typing',

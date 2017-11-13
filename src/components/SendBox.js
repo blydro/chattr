@@ -26,7 +26,7 @@ class SendBox extends React.Component {
 						className="theChosenBox"
 						disabled={!localStorage.getItem('oldSocketId')}
 						placeholder={this.props.myName ? '' : 'Choose a new name...'}
-						onKeyUp={() => this.props.typeOccured()}
+						onKeyUp={() => this.props.typeOccured(this.props.myName)}
 					/>
 				</form><br/>
 			</div>
