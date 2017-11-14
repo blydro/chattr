@@ -26,7 +26,8 @@ Chattr
   - [ ] read receipts
   - [x] typing indicator
     - [ ] fix typing indicator to be less sensitive --> more of a bounce
-    - [ ] move typing sending to state --> if state changes it should sync that chagne! 
+    - [ ] move typing sending to state --> if state changes it should sync that chagne!
 - [ ] auto cleanup names + log! *
 - [ ] auto/maybe manually cleanup log/names (or at least only send last 50 or so)
 - [ ] remove/optimize componentDidMount (devcheetsheets)
+- [ ] make notifications smarter about onCLick --> should depend on if app is open or not
