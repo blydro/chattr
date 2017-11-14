@@ -30,4 +30,6 @@ Chattr
 - [ ] auto cleanup names + log! *
 - [ ] auto/maybe manually cleanup log/names (or at least only send last 50 or so)
 - [ ] remove/optimize componentDidMount (devcheetsheets)
-- [ ] make notifications smarter about onCLick --> should depend on if app is open or not
+- [ ] make notifications smarter about onCLick --> should depend on if app is open or nota
+
+- [ ] BUGFIX: on socket disconnect, restore old connection rather than create a new one, confusing the system
