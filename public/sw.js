@@ -5,7 +5,7 @@ self.addEventListener('push', event => {
 
 	const title = event.data.text() + ' came online!';
 	const options = {
-		body: 'Click to chat',
+		body: '',
 		icon: 'images/icon.png',
 		badge: 'images/badge.png'
 	};
