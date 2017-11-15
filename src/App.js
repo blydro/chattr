@@ -110,7 +110,7 @@ class App extends Component {
 			case 'logArchive': {
 				const filteredLog = this.filterLog(this.state.log, 'message');
 				// Merge 2 log lists in the order depending on which is newer:
-				if (_.last(message.newLog) && _.last(message.newLog).timestamp > _.last(filteredLog).timestamp) {
+				if (_.last(message.newLog) && _.last(filteredLog) && _.last(message.newLog).timestamp > _.last(filteredLog).timestamp) {
 					this.setState({log: _.union(this.state.log, message.newLog)});
 				} else {
 					console.log('new log older, so ignoring its contents.'); // ignore old messages TODO: change this? Do we want ancient messages to trickle in? What if a new message suddenly appears?

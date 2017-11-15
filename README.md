@@ -16,14 +16,13 @@ Chattr
 - [ ] Add https://tailwindcss.com/docs/examples/cards <-- perfect for this project
 
 ### Backend
-- [ ] disconnect from socket server when necessary!
 - [x] push notifications from server.js
 - [ ] make peerlist sending more reliable/not dpeendnet on send
   - [ ] make peerlist comparision much smarter (compare whether this peer or an older version of it is already connected, who is the latest one, etc)
 - [ ] fancy chat stuff
   - [ ] send files
   - [ ] special commands
-  - [ ] read receipts
+  - [ ] read receipts (first parts already there)
   - [x] typing indicator
     - [ ] fix typing indicator to be less sensitive --> more of a bounce
     - [ ] move typing sending to state --> if state changes it should sync that chagne!
