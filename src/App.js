@@ -29,8 +29,10 @@ class App extends Component {
 				peerIds: this.state.peerIds.concat([peerId])
 			});
 
+			const latestFiftyLog = _.takeRight(this.state.log, 25); // Only send latest 25 messages so we don't overload the network
+
 			singleSend(peerId, {type: 'names', newNames: {...this.state.names}});
-			singleSend(peerId, {type: 'logArchive', newLog: this.filterLog(this.state.log, 'message')});
+			singleSend(peerId, {type: 'logArchive', newLog: this.filterLog(latestFiftyLog, 'message')});
 		};
 
 		const socketConnectCallback = () => {
@@ -100,11 +102,16 @@ class App extends Component {
 				break;
 			}
 			case 'logArchive': {
-				for (const i in message.newLog) {
-					if (!_.some(this.state.log, message.newLog[i])) {
-						this.addMessage(message.newLog[i]);
-					}
+				const filteredLog = this.filterLog(this.state.log, 'message');
+				// Merge 2 log lists in the order depending on which is newer:
+				console.log(_.last(message.newLog), _.last(filteredLog));
+
+				if (_.last(message.newLog) && _.last(message.newLog).timestamp > _.last(filteredLog).timestamp) {
+					this.setState({log: _.union(this.state.log, message.newLog)});
+				} else {
+					console.log('new log older, so ignoring its contents.'); // ignore old messages TODO: change this? Do we want ancient messages to trickle in? What if a new message suddenly appears?
 				}
+
 				break;
 			}
 			case 'peerList': {
