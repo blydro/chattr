@@ -80,6 +80,7 @@ class App extends Component {
 				break;
 			}
 			case 'message': {
+				singleSend(message.sender, {type: 'receipt'});
 				this.addMessage(message);
 				break;
 			}
@@ -127,7 +128,7 @@ class App extends Component {
 				break;
 			}
 			default:
-				this.logger('recieved data with invalid type: ' + message);
+				this.logger('recieved data with invalid type: ' + message.type);
 		}
 	}
 
