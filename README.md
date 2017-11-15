@@ -10,8 +10,8 @@ Chattr
   - [ ] fix intro message
 - [ ] optimize for mobile
 - [ ] ice server optimization/better init stuff <-- do more testing
-- [ ] loading animation during log import/make it less laggy
-- [ ] SORT LOG BY DATE
+- [-] --> no longer nessesary because it's faster --> loading animation during log import/make it less laggy
+- [-] SORT LOG BY DATE (sort of --> old messages aren't synced anymore)
 
 - [ ] Add https://tailwindcss.com/docs/examples/cards <-- perfect for this project
 
@@ -27,8 +27,7 @@ Chattr
   - [x] typing indicator
     - [ ] fix typing indicator to be less sensitive --> more of a bounce
     - [ ] move typing sending to state --> if state changes it should sync that chagne!
-- [ ] auto cleanup names + log! *
-- [ ] auto/maybe manually cleanup log/names (or at least only send last 50 or so)
+- [ ] cleanup names (or at least only send last 50 or so)
 - [ ] remove/optimize componentDidMount (devcheetsheets)
 - [ ] make notifications smarter about onCLick --> should depend on if app is open or nota
 
