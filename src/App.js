@@ -80,8 +80,13 @@ class App extends Component {
 				break;
 			}
 			case 'message': {
-				singleSend(message.sender, {type: 'receipt'});
+				singleSend(message.sender, {type: 'receipt', msgTimestamp: message.timestamp});
 				this.addMessage(message);
+				break;
+			}
+			case 'receipt': {
+				const matchingMessage = _.findIndex(this.state.log, ['timestamp', message.msgTimestamp]);
+				console.log(this.state.log[matchingMessage], 'was seen by', this.findName(message.sender));
 				break;
 			}
 			case 'typing': {
@@ -105,8 +110,6 @@ class App extends Component {
 			case 'logArchive': {
 				const filteredLog = this.filterLog(this.state.log, 'message');
 				// Merge 2 log lists in the order depending on which is newer:
-				console.log(_.last(message.newLog), _.last(filteredLog));
-
 				if (_.last(message.newLog) && _.last(message.newLog).timestamp > _.last(filteredLog).timestamp) {
 					this.setState({log: _.union(this.state.log, message.newLog)});
 				} else {
