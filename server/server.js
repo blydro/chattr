@@ -50,7 +50,7 @@ io.on('connection', socket => {
 
 	// Reconnect peers if they disconnect
 	socket.on('request', socketId => {
-		console.log('Rescuing', socketId);
+		console.log('Rescuing', socketId, 'for', socket.id);
 		socket.emit('peer', {
 			peerId: socketId,
 			initiator: true
