@@ -26,7 +26,7 @@ Chattr
   - [x] typing indicator
     - [ ] fix typing indicator to be less sensitive --> more of a bounce
     - [ ] move typing sending to state --> if state changes it should sync that chagne!
-- [ ] cleanup names (or at least only send last 50 or so)
+- [x] cleanup names (or at least only send last 50 or so)
 - [ ] remove/optimize componentDidMount (devcheetsheets)
 - [ ] make notifications smarter about onCLick --> should depend on if app is open or nota
 - [ ] rework message sync
