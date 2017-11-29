@@ -25,6 +25,7 @@ class App extends Component {
 				this.logger('Peer connection established with ' + this.findName(peerId));
 			}, 1500); // Artificially delay this so the name can appear!
 			*/
+
 			this.setState({
 				peerIds: this.state.peerIds.concat([peerId])
 			});
@@ -38,21 +39,21 @@ class App extends Component {
 		const socketConnectCallback = () => {
 			this.setState({socket: socketId()}); // Update our socket id once we have one!
 
-			const oldId = localStorage.getItem('oldSocketId') || '';
-			const newId = this.state.socket.id;
-			if (this.state.names[oldId]) {
-				const names = {...this.state.names};
-				names[newId] = names[oldId];
-				// Don't delte becuase it makes problems: delete names[oldId]; // Don't clog everything up? maybe TODO: add a age component to this
-				this.setState({names});
-			}
-			localStorage.setItem('oldSocketId', this.state.socket.id);
-
 			this.setState({
 				peerIds: this.state.peerIds.concat([this.state.socket.id])
 			});
 
 			this.state.socket.emit('ready', this.findName(this.state.socket.id));
+
+			// Get name from localstorage if it's there
+			if (localStorage.getItem('name')) {
+				// eslint-disable-next-line
+				let names = {...this.state.names};
+				names[this.state.socket.id] = localStorage.getItem('name');
+				this.setState({
+					names
+				});
+			}
 		};
 
 		const disconnectCallback = peerId => {
@@ -81,6 +82,7 @@ class App extends Component {
 			}
 			case 'message': {
 				singleSend(message.sender, {type: 'receipt', msgTimestamp: message.timestamp});
+				message.sender = this.findName(message.sender);  // Change the local name
 				this.addMessage(message);
 				break;
 			}
@@ -171,33 +173,12 @@ class App extends Component {
 		this.addMessage(message);
 	}
 
-	componentWillMount() {
-		this.setState({
-			log: JSON.parse(localStorage.getItem('log')) || [],
-			names: JSON.parse(localStorage.getItem('names')) || {},
-			peerIds: [],
-			myName: undefined,
-			socket: socketId(),
-			typing: false,
-			typers: []
-		});
-
-		if (localStorage.getItem('log') === '[]' || !JSON.parse(localStorage.getItem('log'))) { // New Client
-			this.setState({log: [{
-				timestamp: 0,
-				type: 'onboarding'
-			}]});
-		}
-	}
-
 	componentDidMount() {
 		this.logger('Log Initialized');
 		this.logger('Served from ' + window.location.hostname);
 	}
 
 	componentWillUpdate(nextProps, nextState) {
-		localStorage.setItem('names', JSON.stringify(nextState.names));
-
 		const log = this.filterLog(nextState.log, 'message');
 		localStorage.setItem('log', JSON.stringify(log)); // Don't slice it after all: .slice(log.length - 10)));
 	}
@@ -213,6 +194,9 @@ class App extends Component {
 
 		massSend(msg);
 		massSend({type: 'peerList', peerList: this.state.peerIds}); // Every time we send a message is a good time to send the peercheck? TODO put this on a timer and make it less bad
+
+		// When we save locally, we want to have the sender name be correct
+		msg.sender = this.findName(msg.sender);
 
 		this.setState({
 			log: this.state.log.concat([msg])
@@ -230,6 +214,8 @@ class App extends Component {
 		this.setState({
 			names
 		});
+
+		localStorage.setItem('name', newName);
 
 		massSend({type: 'names', newNames: names});
 
@@ -269,6 +255,24 @@ class App extends Component {
 		});
 
 		this.allDoneTyping();
+	}
+
+	componentWillMount() {
+		this.setState({
+			log: JSON.parse(localStorage.getItem('log')) || [],
+			names: {},
+			peerIds: [],
+			socket: socketId(),
+			typing: false,
+			typers: []
+		});
+
+		if (localStorage.getItem('log') === '[]' || !JSON.parse(localStorage.getItem('log'))) { // New Client
+			this.setState({log: [{
+				timestamp: 0,
+				type: 'onboarding'
+			}]});
+		}
 	}
 
 	render() {
