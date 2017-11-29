@@ -32,3 +32,4 @@ Chattr
 - [ ] rework message sync
 
 - [ ] BUGFIX: on socket disconnect, restore old connection rather than create a new one, confusing the system
+- [ ] IMPROEVMENT: merge names and peerids --> names keys should be the same thing....hoepfully
