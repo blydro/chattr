@@ -34,3 +34,6 @@ Chattr
 - [ ] BUGFIX: on socket disconnect, restore old connection rather than create a new one, confusing the system
 - [x] IMPROEVMENT: merge names and peerids --> names keys should be the same thing....hoepfully
   - [ ] improvement from there: get a premanent guid and use that to get all the benefits back
+
+
+TODO: sperate the interface and backend logic. Pass new events through an api. Have the entire back end stuff be in its own file
