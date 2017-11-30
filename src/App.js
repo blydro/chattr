@@ -25,10 +25,11 @@ class App extends Component {
 				this.logger('Peer connection established with ' + this.findName(peerId));
 			}, 1500); // Artificially delay this so the name can appear!
 			*/
-
-			this.setState({
-				peerIds: this.state.peerIds.concat([peerId])
-			});
+			if (!this.state.names[peerId]) {
+				const names = {...this.state.names};
+				names[peerId] = undefined;
+				this.setState({names});
+			}
 
 			const latestFiftyLog = _.takeRight(this.state.log, 25); // Only send latest 25 messages so we don't overload the network
 
@@ -39,30 +40,24 @@ class App extends Component {
 		const socketConnectCallback = () => {
 			this.setState({socket: socketId()}); // Update our socket id once we have one!
 
+			// Get name from localstorage if it's there otherwise use assigned name
+			const names = {...this.state.names};
+			console.log(names, socketId().id);
+			names[socketId().id] = localStorage.getItem('name') ? localStorage.getItem('name') : undefined;
 			this.setState({
-				peerIds: this.state.peerIds.concat([this.state.socket.id])
+				names
 			});
 
 			this.state.socket.emit('ready', this.findName(this.state.socket.id));
-
-			// Get name from localstorage if it's there
-			if (localStorage.getItem('name')) {
-				// eslint-disable-next-line
-				let names = {...this.state.names};
-				names[this.state.socket.id] = localStorage.getItem('name');
-				this.setState({
-					names
-				});
-			}
 		};
 
 		const disconnectCallback = peerId => {
 			this.logger(this.findName(peerId) + ' disconnected');
 
-			const peerIds = this.state.peerIds;
-			peerIds.splice(this.state.peerIds.indexOf(peerId), 1);
+			const names = this.state.names;
+			delete names[peerId];
 			this.setState({
-				peerIds
+				names
 			});
 		};
 
@@ -82,13 +77,13 @@ class App extends Component {
 			}
 			case 'message': {
 				singleSend(message.sender, {type: 'receipt', msgTimestamp: message.timestamp});
-				message.sender = this.findName(message.sender);  // Change the local name
+				message.sender = this.findName(message.sender);  // Change the name for the local client
 				this.addMessage(message);
 				break;
 			}
 			case 'receipt': {
 				const matchingMessage = _.findIndex(this.state.log, ['timestamp', message.msgTimestamp]);
-				console.log(this.state.log[matchingMessage], 'was seen by', this.findName(message.sender));
+				console.log(this.state.log[matchingMessage] + ' was seen by ' + this.findName(message.sender));
 				break;
 			}
 			case 'typing': {
@@ -122,10 +117,10 @@ class App extends Component {
 				break;
 			}
 			case 'peerList': {
-				if (message.peerList.length !== this.state.peerIds.length) {
+				if (message.peerList.length !== Object.keys(this.state.names).length) {
 					console.log('peerlist was different, doing some analysis!');
 					for (const peer in message.peerList) {
-						if (this.state.peerIds.indexOf(peer) === -1) {
+						if (Object.keys(this.state.names).indexOf(peer) === -1) {
 							console.log(peer, 'was missing in my list. requesting connection to' + peer);
 							requestPeer(peer);
 						}
@@ -193,7 +188,7 @@ class App extends Component {
 		};
 
 		massSend(msg);
-		massSend({type: 'peerList', peerList: this.state.peerIds}); // Every time we send a message is a good time to send the peercheck? TODO put this on a timer and make it less bad
+		massSend({type: 'peerList', peerList: Object.keys(this.state.names)}); // Every time we send a message is a good time to send the peercheck? TODO put this on a timer and make it less bad
 
 		// When we save locally, we want to have the sender name be correct
 		msg.sender = this.findName(msg.sender);
@@ -261,7 +256,6 @@ class App extends Component {
 		this.setState({
 			log: JSON.parse(localStorage.getItem('log')) || [],
 			names: {},
-			peerIds: [],
 			socket: socketId(),
 			typing: false,
 			typers: []
@@ -284,6 +278,7 @@ class App extends Component {
 						sendMessage={this.massTextBootyCall}
 						setName={this.sayMyNameSayMyName}
 						myName={this.state.names[this.state.socket.id]}
+						disconnectedfromSocket={!this.state.socket.id}
 						typeOccured={_.debounce(this.typeOccured, 100)}
 					/>
 				</div>
@@ -293,14 +288,13 @@ class App extends Component {
 					<div className="debugButtons">
 						<button onClick={() => localStorage.setItem('log', '[]')}>reset localstorage log</button>
 						<button onClick={() => localStorage.setItem('names', '{}')}>reset localstorage names</button>
-						<button onClick={() => localStorage.setItem('oldSocketId', '')}>reset localstorage oldsocketid</button>
-						<button onClick={() => massSend({type: 'peerList', peerList: this.state.peerIds})}>send peerlist</button>
+						<button onClick={() => massSend({type: 'peerList', peerList: Object.keys(this.state.names)})}>send peerlist</button>
 					</div> :
 				''}
 
 				<header className="App-header">
 					<h1 className="App-title"><span className="fancy">Chattr</span></h1>
-					<OnlineList peers={this.state.peerIds} findName={this.findName} setName={this.sayMyNameSayMyName} me={this.state.socket.id} typers={this.state.typers}/>
+					<OnlineList peers={Object.keys(this.state.names)} findName={this.findName} setName={this.sayMyNameSayMyName} me={this.state.socket.id} typers={this.state.typers}/>
 				</header>
 
 			</div>

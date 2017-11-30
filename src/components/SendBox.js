@@ -24,7 +24,7 @@ class SendBox extends React.Component {
 						ref={input => this.message = input}
 						type="text"
 						className="theChosenBox"
-						disabled={!localStorage.getItem('oldSocketId')}
+						disabled={this.props.disconnectedfromSocket}
 						placeholder={this.props.myName ? '' : 'Choose a new name...'}
 						onKeyUp={() => this.props.typeOccured(this.props.myName)}
 					/>
@@ -38,7 +38,8 @@ SendBox.propTypes = {
 	sendMessage: PropTypes.func.isRequired,
 	setName: PropTypes.func.isRequired,
 	myName: PropTypes.string,
-	typeOccured: PropTypes.func.isRequired
+	typeOccured: PropTypes.func.isRequired,
+	disconnectedfromSocket: PropTypes.bool.isRequired
 };
 
 SendBox.defaultProps = {
