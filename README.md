@@ -36,4 +36,4 @@ Chattr
   - [ ] improvement from there: get a premanent guid and use that to get all the benefits back
 
 
-TODO: sperate the interface and backend logic. Pass new events through an api. Have the entire back end stuff be in its own file
+**TODO:** seperate the interface and backend logic. Pass new events through an api. Have the entire back end stuff be in its own file
