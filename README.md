@@ -1,39 +1,22 @@
-Chattr
-==============
+# Chattr
 
-### UI
-- [ ] prettify reset button
-- [x] work without a socket server
-  - [ ] show failure message when not connected to socket server
-- [ ] socket server disconnect message?
-- [x] include intro message if the log is empty
-- [ ] optimize for mobile
-- [-] SORT LOG BY DATE?! (sort of --> old messages aren't synced anymore)
-- [ ] Loading screen!
+## Goals
+The idea behind this project was to create a decentralized chat application. Each of the clients would be connected to each other, and chat messages as well as files/data should be able to be sent in a completely decentralized fashion. Not all clients would even have to be connected, as all messages would be synced across all clients for greater stability. This would essentially create a mesh network of clients which would only communicate with each other, leading to greater stability and less network overhead. The very best video calling apps are built atop of WebRTC, so a WebRTC chat app must run even better! The only challenge was syncing across the mesh network. The magnitude of this challenge is demonstrated in part by there being few to no successful open-source examples of a p2p video chat with multiple clients.
 
-- [ ] Add https://tailwindcss.com/docs/examples/cards <-- perfect for this project
+It combined all my interests at the time, namely WebRTC, React.js, more specifically React.js single page web apps. Along the way, it became an oppertunity to learn about Google Cloud Messaging, another interest of mine. In testing the app, I found I desired a notification which would tell the user that a friend logged on. This is a feature which was present in the instant messaging apps of yesteryear, but is conspicuously absent from modern ones. Using Google Cloud Messanging, it was able to be implemented in a modern fashion.
 
-### Backend
-=======
-- [ ] better connection restoration (rework rescue)
-- [x] push notifications from server.js
-- [ ] make peerlist sending more reliable/not dpeendnet on send
-  - [ ] make peerlist comparision much smarter (compare whether this peer or an older version of it is already connected, who is the latest one, etc)
-- [ ] fancy chat stuff
-  - [ ] send files
-  - [ ] special commands
-  - [ ] read receipts (first parts already there)
-  - [x] typing indicator
-    - [ ] fix typing indicator to be less sensitive --> more of a bounce
-    - [ ] move typing sending to state --> if state changes it should sync that chagne!
-- [x] cleanup names (or at least only send last 50 or so)
-- [ ] remove/optimize componentDidMount (devcheetsheets)
-- [ ] make notifications smarter about onCLick --> should depend on if app is open or nota
-- [ ] rework message sync
+## Structure
+The app is entirely written in ES6 Javascript, both for the client and the server. However, the codebases are separate. The server only listens on a websocket port, and acts as a signalling server linking the clients together. It also serves Google Cloud Messaging tokens to the clients, and send notifications when asked to do so by a client. To link the clients together, one client sends a WebRTC signaling token, which is then sent to all other connected clients. The clients, on receiving this token would then each independently connect to the new client. The goal was for the client to then disconnect from the server, and have the already connected clients pass new tokens around by each other — the server would send a new client the connection tokens for previously logged in clients (therefore the signalling server would only be pinged once on app load) This would allow for even more decentralization and privacy. However this was never implemented, due to reasons mentioned later.
 
-- [ ] BUGFIX: on socket disconnect, restore old connection rather than create a new one, confusing the system
-- [x] IMPROEVMENT: merge names and peerids --> names keys should be the same thing....hoepfully
-  - [ ] improvement from there: get a premanent guid and use that to get all the benefits back
+The client was a single page react app, relatively simple with much room for expansion. The minimal code (in the src folder) is comprised of mainly the app.js and networking.js file. The components in the components directory are mostly UI related and are for the purposes of this document not relevant. The app.js and networking.js files bear the brunt of the work, sending/receiving JSON data to/from either the signaling server or other clients. These pieces of information could be everything from a name change to a typing indicator to an actual message sent. Networking.js is responsible for both sendin each of these messages to each other connected client, as well as maintaining that list of connected clients, syncing with both the singaling server as well as other clients. The react code maintains a list of users, their unique ids, and a log of every event which has occured.
 
+There is also a service worker, which is responsible for sending notifications to the user when a new client connects to the signaling server. This service worker polls the signaling server via a Google Cloud Messaging subscription. It will even run if the browser is closed, which is especially helpful on mobile.
 
-**TODO:** seperate the interface and backend logic. Pass new events through an api. Have the entire back end stuff be in its own file
+## Issues Along the Way
+In an effort to maintain sufficient abstraction, the peer to peer data transfer was separated from the main interface. With minimal edits, the interface could be modified to use a centralized backend. The abstraction had to take place on the client. As a standard webpack configuration (dictated by create-react-app) was used, it was somewhat difficult to create a sufficiently abstract interface. All "networking" code is in the networking.js file. However in hindsight it is clear that the networking layer was not seperated enough. It would have made more sense to further abstract the networking layer, thereby doing less data processing within react. As this wasn't the case, the react app had to handle much of the data processing (networking.js had multiple callbacks, which culminated in the react app receiving generic json which it then had to process. This resulted in the main app component having to handle types of logic which were not appropriate for a react app. This resulted in the react code very quickly becoming rather cumbersome and bloated. All components other than App.js are reusuable, however App.js itself is simply too tied to networking.js and not in any way reusable. This is a fundamental failure in the structure of the application, and resulted in many bugs and issues as the project scaled and as more features were added – every new data type had to be processed within the react app, whereas it should have been handled in a separate piece of middleware. This processing within react also resulted in many potential security vulnerabilities, as the user could send malicious data to the signaling server.
+
+## Postmortem
+This project started very simply, which caused the flawed design to not become apparent. However as it began to adopt features, it became painfully evident that the networking layer wasn't nearly fleshed out enough. If I were to start this project over, I would develop the messaging interface and backend p2p data sync interface separately. While this current setup works fairly well and has had most bugs or security flaws ironed out, it is not nearly production ready, and is already too bloated to expand. The p2p data sync aspect of this project is something which could use some exploring. Abstracting this a little bit more, perhaps into its own package, and then building a simple chat app around that might be a superior option, and perhaps a project for the future… The interface itself was much to my liking. Simple, clean, elegant, responsive, and fast, it did its job well. It could also easily be mutated to support any other data transfer backend. The p2p backend, however, quickly became a bloated mess, and would need to be rewritten should more features be added (as mentionted above, perhaps as its own library). Although the networking code leaves much to be desired, I learned a lot, and with some more planning I think I can use what I learned from this project to build a better data sync library. I believe there is a demand for a simple library which can bridge clients together and then send arbitrary data between them, as well as sync their contents. Building a chat interface on top of this powerful mesh network is then trivial. Only after fleshing something like that out and have it be incredibly stable, is it the appropriate time to add a user interface. Data sync is incredibly difficult, and so is peer to peer messaging. They can not simply be baked into another project. Such a solution is both impressive and complex enough that it should should stand on its own.
+
+## Final Thoughts
+To meet the goals stated above, it would perhaps have been cleverer to adapt something such as [webtorrent](https://github.com/webtorrent/webtorrent) for the networking layer. The torrent protocol has already successfully dealt with the issues I would up facing. Perhaps creating my own p2p sync library would be reinventing the wheel. By building a data sync layer on top of this much more stable technology (WebRTC brings with it a lot of low level networking weirdness), the project can be more sucesfully executed. Nevertheless the code here is a sucessful implementation of the goal stated, albeit with no room for expansion. A good version 0.1.
