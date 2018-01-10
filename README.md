@@ -1,5 +1,7 @@
 # Chattr
 
+![Screenshot of Chattr](screenshot.png)
+
 ## Goals
 The idea behind this project was to create a decentralized chat application. Each of the clients would be connected to each other, and chat messages as well as files/data should be able to be sent in a completely decentralized fashion. Not all clients would even have to be connected, as all messages would be synced across all clients for greater stability. This would essentially create a mesh network of clients which would only communicate with each other, leading to greater stability and less network overhead. The very best video calling apps are built atop of WebRTC, so a WebRTC chat app must run even better! The only challenge was syncing across the mesh network. The magnitude of this challenge is demonstrated in part by there being few to no successful open-source examples of a p2p video chat with multiple clients.
 
