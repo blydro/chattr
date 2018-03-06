@@ -7,8 +7,7 @@ import {
 	massSend,
 	singleSend,
 	socketId,
-	requestPeer,
-	backupSend
+	requestPeer
 } from './networking';
 
 import SendBox from './components/SendBox';
@@ -22,11 +21,16 @@ class App extends Component {
 		const dataCallback = (data, json) => {
 			let decoded = undefined;
 			if (json === true) {
-				decoded = data;
+				if (JSON.parse(data)[0]) {
+					decoded = JSON.parse(data);
+				} else {
+					decoded = data;
+				}
 			} else {
 				decoded = new TextDecoder('utf-8').decode(data);
 			}
 			decoded = JSON.parse(decoded);
+
 			this.handleIncoming(decoded);
 		};
 
@@ -65,6 +69,7 @@ class App extends Component {
 			});
 
 			this.state.socket.emit('ready', this.findName(this.state.socket.id));
+			massSend({ type: 'names', newNames: names });
 		};
 
 		const disconnectCallback = peerId => {
@@ -153,21 +158,6 @@ class App extends Component {
 
 				break;
 			}
-			case 'peerList': {
-				if (message.peerList.length !== Object.keys(this.state.names).length) {
-					console.log('peerlist was different, doing some analysis!');
-					for (const peer in message.peerList) {
-						if (Object.keys(this.state.names).indexOf(peer) === -1) {
-							console.log(
-								peer,
-								'was missing in my list. requesting connection to' + peer
-							);
-							requestPeer(peer);
-						}
-					}
-				}
-				break;
-			}
 			default:
 				this.logger('recieved data with invalid type: ' + message.type);
 		}
@@ -228,13 +218,6 @@ class App extends Component {
 		};
 
 		massSend(msg);
-		massSend({ type: 'peerList', peerList: Object.keys(this.state.names) }); // Every time we send a message is a good time to send the peercheck? TODO put this on a timer and make it less bad
-
-		if (Object.entries(this.state.names).length === 1) {
-			msg.sender = this.findName(this.state.socket.id);
-			msg.type = 'socket-message';
-			backupSend(msg);
-		}
 
 		// When we save locally, we want to have the sender name be correct
 		msg.sender = this.findName(msg.sender);

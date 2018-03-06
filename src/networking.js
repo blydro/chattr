@@ -109,6 +109,9 @@ function massSend(msg) {
 	Object.keys(peers).map(peer => {
 		singleSend(peer, msg);
 	});
+	if (Object.keys(peers).length === 0) {
+		backupSend(msg);
+	}
 }
 
 function backupSend(msg) {
@@ -122,6 +125,7 @@ function singleSend(peer, msg) {
 		peers[peer].send(JSON.stringify(msg));
 	} else {
 		console.log('peer %s not open. message not sent', peer);
+		backupSend(JSON.stringify(msg));
 	}
 }
 
