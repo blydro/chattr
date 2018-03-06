@@ -4,9 +4,9 @@ import urlB64ToUint8Array from './helpers';
 
 const peers = {};
 
-// Const ioId = 'https://blydro-socketio-server.now.sh';
-// Const socket = io(ioId);
-const socket = io(window.location.hostname + ':3030');
+const ioId = 'https://blydro-socketio-server.now.sh';
+const socket = io(ioId);
+//const socket = io(window.location.hostname + ':3030');
 let zombieSocketId;
 
 function setupPeers(callbacks, logger) {
