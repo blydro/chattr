@@ -75,6 +75,7 @@ function setupPeers(callbacks, logger) {
 		});
 
 		socket.on('socketmessage', msg => {
+			console.log('the day is saved look what arrived', msg);
 			callbacks.dataCallback(msg, true);
 		});
 

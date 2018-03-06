@@ -71,7 +71,7 @@ io.on('connection', socket => {
 
 	socket.on('backup', msg => {
 		console.log('got a backup message!');
-		socket.emit('socketmessage', JSON.stringify(msg));
+		io.emit('socketmessage', JSON.stringify(msg));
 	});
 });
 

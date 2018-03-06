@@ -95,11 +95,15 @@ class App extends Component {
 				break;
 			}
 			case 'message': {
-				singleSend(message.sender, {
+				/*singleSend(message.sender, {
 					type: 'receipt',
 					msgTimestamp: message.timestamp
-				});
+				});*/
 				message.sender = this.findName(message.sender); // Change the name for the local client
+				this.addMessage(message);
+				break;
+			}
+			case 'socket-message': {
 				this.addMessage(message);
 				break;
 			}
@@ -216,7 +220,7 @@ class App extends Component {
 
 	// eslint-disable-next-line no-undef
 	massTextBootyCall = message => {
-		const msg = {
+		let msg = {
 			timestamp: Date.now(),
 			type: 'message',
 			msg: message,
@@ -227,6 +231,8 @@ class App extends Component {
 		massSend({ type: 'peerList', peerList: Object.keys(this.state.names) }); // Every time we send a message is a good time to send the peercheck? TODO put this on a timer and make it less bad
 
 		if (Object.entries(this.state.names).length === 1) {
+			msg.sender = this.findName(this.state.socket.id);
+			msg.type = 'socket-message';
 			backupSend(msg);
 		}
 
