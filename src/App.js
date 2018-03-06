@@ -1,15 +1,21 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 
-import {setupPeers, massSend, singleSend, socketId, requestPeer} from './networking';
+import {
+	setupPeers,
+	massSend,
+	singleSend,
+	socketId,
+	requestPeer,
+	backupSend
+} from './networking';
 
 import SendBox from './components/SendBox';
 import Messages from './components/Messages';
 import OnlineList from './components/OnlineList';
 
 class App extends Component {
-
 	constructor() {
 		super();
 
@@ -26,24 +32,29 @@ class App extends Component {
 			}, 1500); // Artificially delay this so the name can appear!
 			*/
 			if (!this.state.names[peerId]) {
-				const names = {...this.state.names};
+				const names = { ...this.state.names };
 				names[peerId] = undefined;
-				this.setState({names});
+				this.setState({ names });
 			}
 
 			const latestFiftyLog = _.takeRight(this.state.log, 25); // Only send latest 25 messages so we don't overload the network
 
-			singleSend(peerId, {type: 'names', newNames: {...this.state.names}});
-			singleSend(peerId, {type: 'logArchive', newLog: this.filterLog(latestFiftyLog, 'message')});
+			singleSend(peerId, { type: 'names', newNames: { ...this.state.names } });
+			singleSend(peerId, {
+				type: 'logArchive',
+				newLog: this.filterLog(latestFiftyLog, 'message')
+			});
 		};
 
 		const socketConnectCallback = () => {
-			this.setState({socket: socketId()}); // Update our socket id once we have one!
+			this.setState({ socket: socketId() }); // Update our socket id once we have one!
 
 			// Get name from localstorage if it's there otherwise use assigned name
-			const names = {...this.state.names};
+			const names = { ...this.state.names };
 			console.log(names, socketId().id);
-			names[socketId().id] = localStorage.getItem('name') ? localStorage.getItem('name') : undefined;
+			names[socketId().id] = localStorage.getItem('name')
+				? localStorage.getItem('name')
+				: undefined;
 			this.setState({
 				names
 			});
@@ -61,12 +72,15 @@ class App extends Component {
 			});
 		};
 
-		setupPeers({
-			dataCallback,
-			connectCallback,
-			socketConnectCallback,
-			disconnectCallback
-		}, this.logger);
+		setupPeers(
+			{
+				dataCallback,
+				connectCallback,
+				socketConnectCallback,
+				disconnectCallback
+			},
+			this.logger
+		);
 	}
 
 	handleIncoming(message) {
@@ -76,14 +90,24 @@ class App extends Component {
 				break;
 			}
 			case 'message': {
-				singleSend(message.sender, {type: 'receipt', msgTimestamp: message.timestamp});
-				message.sender = this.findName(message.sender);  // Change the name for the local client
+				singleSend(message.sender, {
+					type: 'receipt',
+					msgTimestamp: message.timestamp
+				});
+				message.sender = this.findName(message.sender); // Change the name for the local client
 				this.addMessage(message);
 				break;
 			}
 			case 'receipt': {
-				const matchingMessage = _.findIndex(this.state.log, ['timestamp', message.msgTimestamp]);
-				console.log(this.state.log[matchingMessage] + ' was seen by ' + this.findName(message.sender));
+				const matchingMessage = _.findIndex(this.state.log, [
+					'timestamp',
+					message.msgTimestamp
+				]);
+				console.log(
+					this.state.log[matchingMessage] +
+						' was seen by ' +
+						this.findName(message.sender)
+				);
 				break;
 			}
 			case 'typing': {
@@ -96,19 +120,23 @@ class App extends Component {
 					_.pull(typers, sender);
 				}
 
-				this.setState({typers});
+				this.setState({ typers });
 				break;
 			}
 			case 'names': {
-				const names = {...this.state.names, ...message.newNames};
-				this.setState({names});
+				const names = { ...this.state.names, ...message.newNames };
+				this.setState({ names });
 				break;
 			}
 			case 'logArchive': {
 				const filteredLog = this.filterLog(this.state.log, 'message');
 				// Merge 2 log lists in the order depending on which is newer:
-				if (_.last(message.newLog) && _.last(filteredLog) && _.last(message.newLog).timestamp > _.last(filteredLog).timestamp) {
-					this.setState({log: _.union(this.state.log, message.newLog)});
+				if (
+					_.last(message.newLog) &&
+					_.last(filteredLog) &&
+					_.last(message.newLog).timestamp > _.last(filteredLog).timestamp
+				) {
+					this.setState({ log: _.union(this.state.log, message.newLog) });
 				} else {
 					console.log('new log older, so ignoring its contents.'); // ignore old messages TODO: change this?
 					// Do we want ancient messages to trickle in? What if a new message suddenly appears?
@@ -121,7 +149,10 @@ class App extends Component {
 					console.log('peerlist was different, doing some analysis!');
 					for (const peer in message.peerList) {
 						if (Object.keys(this.state.names).indexOf(peer) === -1) {
-							console.log(peer, 'was missing in my list. requesting connection to' + peer);
+							console.log(
+								peer,
+								'was missing in my list. requesting connection to' + peer
+							);
 							requestPeer(peer);
 						}
 					}
@@ -149,7 +180,7 @@ class App extends Component {
 			return this.state.names[peerId];
 		}
 		return peerId;
-	}
+	};
 
 	addMessage(message) {
 		this.setState({
@@ -166,7 +197,7 @@ class App extends Component {
 		};
 
 		this.addMessage(message);
-	}
+	};
 
 	componentDidMount() {
 		this.logger('Log Initialized');
@@ -188,7 +219,11 @@ class App extends Component {
 		};
 
 		massSend(msg);
-		massSend({type: 'peerList', peerList: Object.keys(this.state.names)}); // Every time we send a message is a good time to send the peercheck? TODO put this on a timer and make it less bad
+		massSend({ type: 'peerList', peerList: Object.keys(this.state.names) }); // Every time we send a message is a good time to send the peercheck? TODO put this on a timer and make it less bad
+
+		if (Object.entries(this.state.names).length === 1) {
+			backupSend(msg);
+		}
 
 		// When we save locally, we want to have the sender name be correct
 		msg.sender = this.findName(msg.sender);
@@ -196,11 +231,13 @@ class App extends Component {
 		this.setState({
 			log: this.state.log.concat([msg])
 		});
-	}
+	};
 
 	// eslint-disable-next-line no-undef
 	sayMyNameSayMyName = newName => {
-		const oldName = this.state.names[this.state.socket.id] ? this.state.names[this.state.socket.id] : this.state.socket.id;
+		const oldName = this.state.names[this.state.socket.id]
+			? this.state.names[this.state.socket.id]
+			: this.state.socket.id;
 		const updateString = oldName + ' changed to ' + newName;
 
 		const names = this.state.names;
@@ -212,16 +249,16 @@ class App extends Component {
 
 		localStorage.setItem('name', newName);
 
-		massSend({type: 'names', newNames: names});
+		massSend({ type: 'names', newNames: names });
 
 		if (newName.length > 0) {
-			massSend({type: 'log', msg: updateString});
+			massSend({ type: 'log', msg: updateString });
 			this.logger('Changing name to ' + newName);
 		} else {
-			massSend({type: 'log', msg: oldName + ' reset name'});
+			massSend({ type: 'log', msg: oldName + ' reset name' });
 			this.logger('Resetting name');
 		}
-	}
+	};
 
 	// eslint-disable-next-line no-undef
 	allDoneTyping = _.debounce(() => {
@@ -232,7 +269,7 @@ class App extends Component {
 			type: 'typing',
 			typing: false
 		});
-	}, 300)
+	}, 300);
 
 	// eslint-disable-next-line no-undef
 	typeOccured = myName => {
@@ -250,7 +287,7 @@ class App extends Component {
 		});
 
 		this.allDoneTyping();
-	}
+	};
 
 	componentWillMount() {
 		this.setState({
@@ -261,11 +298,19 @@ class App extends Component {
 			typers: []
 		});
 
-		if (localStorage.getItem('log') === '[]' || !JSON.parse(localStorage.getItem('log'))) { // New Client
-			this.setState({log: [{
-				timestamp: 0,
-				type: 'onboarding'
-			}]});
+		if (
+			localStorage.getItem('log') === '[]' ||
+			!JSON.parse(localStorage.getItem('log'))
+		) {
+			// New Client
+			this.setState({
+				log: [
+					{
+						timestamp: 0,
+						type: 'onboarding'
+					}
+				]
+			});
 		}
 	}
 
@@ -273,7 +318,7 @@ class App extends Component {
 		return (
 			<div className="App">
 				<div className="interface">
-					<Messages log={this.state.log} names={this.state.names}/>
+					<Messages log={this.state.log} names={this.state.names} />
 					<SendBox
 						sendMessage={this.massTextBootyCall}
 						setName={this.sayMyNameSayMyName}
@@ -283,20 +328,42 @@ class App extends Component {
 					/>
 				</div>
 
-				<br/>
-				{this.props.debug === true ?
+				<br />
+				{this.props.debug === true ? (
 					<div className="debugButtons">
-						<button onClick={() => localStorage.setItem('log', '[]')}>reset localstorage log</button>
-						<button onClick={() => localStorage.setItem('names', '{}')}>reset localstorage names</button>
-						<button onClick={() => massSend({type: 'peerList', peerList: Object.keys(this.state.names)})}>send peerlist</button>
-					</div> :
-				''}
+						<button onClick={() => localStorage.setItem('log', '[]')}>
+							reset localstorage log
+						</button>
+						<button onClick={() => localStorage.setItem('names', '{}')}>
+							reset localstorage names
+						</button>
+						<button
+							onClick={() =>
+								massSend({
+									type: 'peerList',
+									peerList: Object.keys(this.state.names)
+								})
+							}
+						>
+							send peerlist
+						</button>
+					</div>
+				) : (
+					''
+				)}
 
 				<header className="App-header">
-					<h1 className="App-title"><span className="fancy">Chattr</span></h1>
-					<OnlineList peers={Object.keys(this.state.names)} findName={this.findName} setName={this.sayMyNameSayMyName} me={this.state.socket.id} typers={this.state.typers}/>
+					<h1 className="App-title">
+						<span className="fancy">Chattr</span>
+					</h1>
+					<OnlineList
+						peers={Object.keys(this.state.names)}
+						findName={this.findName}
+						setName={this.sayMyNameSayMyName}
+						me={this.state.socket.id}
+						typers={this.state.typers}
+					/>
 				</header>
-
 			</div>
 		);
 	}

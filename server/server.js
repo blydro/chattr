@@ -1,14 +1,14 @@
 const server = require('http').createServer();
 const _ = require('lodash');
-const io = require('socket.io')(server, {origins: '*:*'});
+const io = require('socket.io')(server, { origins: '*:*' });
 const webpush = require('web-push');
 
 const vapidKeys = webpush.generateVAPIDKeys();
 webpush.setGCMAPIKey('AIzaSyDeMtcKL8N6hDVQ1G4EjM-_INtMlrWw5iM');
 webpush.setVapidDetails(
-  'mailto:complaints@blydro.com',
-  vapidKeys.publicKey,
-  vapidKeys.privateKey
+	'mailto:complaints@blydro.com',
+	vapidKeys.publicKey,
+	vapidKeys.privateKey
 );
 
 // eslint-disable-next-line
@@ -68,13 +68,20 @@ io.on('connection', socket => {
 
 		socket.emit('publickey', JSON.stringify(vapidKeys.publicKey));
 	});
+
+	socket.on('backup', msg => {
+		console.log('got a backup message!');
+		socket.emit('socketmessage', JSON.stringify(msg));
+	});
 });
 
 function massPush(message) {
 	for (let i = 0; i < subscriptions.length; i++) {
-		webpush.sendNotification(JSON.parse(subscriptions[i]), message, {TTL: 30}).catch(err => {
-			console.warn('Failed to push with status code', err.statusCode);
-		});
+		webpush
+			.sendNotification(JSON.parse(subscriptions[i]), message, { TTL: 30 })
+			.catch(err => {
+				console.warn('Failed to push with status code', err.statusCode);
+			});
 	}
 }
 

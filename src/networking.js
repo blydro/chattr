@@ -26,23 +26,27 @@ function setupPeers(callbacks, logger) {
 		if ('serviceWorker' in navigator && 'PushManager' in window) {
 			console.log('Service Worker and Push is supported');
 
-			navigator.serviceWorker.register('sw.js')
-			.then(swReg => {
-				console.log('Service Worker is registered', swReg);
-			})
-			.catch(err => {
-				console.error('Service Worker Error', err);
-			});
+			navigator.serviceWorker
+				.register('sw.js')
+				.then(swReg => {
+					console.log('Service Worker is registered', swReg);
+				})
+				.catch(err => {
+					console.error('Service Worker Error', err);
+				});
 			navigator.serviceWorker.ready.then(reg => {
 				reg.pushManager.getSubscription().then(subscription => {
 					if (subscription !== null) {
-						subscription.unsubscribe().then(() => {
-							// Subscribe to new subscription
-							subscribeUser(reg, publickey);
-						}).catch(err => {
-							// Unsubscription failed
-							console.warn('Failed to unsubscribe old subscrption!', err);
-						});
+						subscription
+							.unsubscribe()
+							.then(() => {
+								// Subscribe to new subscription
+								subscribeUser(reg, publickey);
+							})
+							.catch(err => {
+								// Unsubscription failed
+								console.warn('Failed to unsubscribe old subscrption!', err);
+							});
 					} else {
 						subscribeUser(reg, publickey);
 					}
@@ -55,7 +59,11 @@ function setupPeers(callbacks, logger) {
 
 	socket.on('peer', data => {
 		const peerId = data.peerId;
-		const peer = new Peer({initiator: data.initiator, trickle: true, reconnectTimer: 900});
+		const peer = new Peer({
+			initiator: data.initiator,
+			trickle: true,
+			reconnectTimer: 900
+		});
 
 		// NO OMG SO SPAMMY logger('Peer available for connection discovered from signaling server, Peer ID: ' + peerId);
 
@@ -64,6 +72,11 @@ function setupPeers(callbacks, logger) {
 				// NO logger('Received signaling data from Peer ID:' + peerId);
 				peer.signal(data.signal);
 			}
+		});
+
+		socket.on('socketmessage', msg => {
+			const message = JSON.parse(msg);
+			callbacks.dataCallback(message);
 		});
 
 		peer.on('signal', data => {
@@ -98,6 +111,10 @@ function massSend(msg) {
 	});
 }
 
+function backupSend(msg) {
+	socket.emit('backup', msg);
+}
+
 function singleSend(peer, msg) {
 	msg.sender = socket.id || zombieSocketId;
 
@@ -109,9 +126,9 @@ function singleSend(peer, msg) {
 }
 
 function socketId() {
-		// Return either the scoket or an undefined string depending on situation!!
+	// Return either the scoket or an undefined string depending on situation!!
 	if (socket.disconnected) {
-		return {id: localStorage.getItem('oldSocketId')};
+		return { id: localStorage.getItem('oldSocketId') };
 	}
 
 	return socket;
@@ -135,19 +152,20 @@ function requestPeer(peerId) {
 
 function subscribeUser(swRegistration, applicationServerPublicKey) {
 	const applicationServerKey = urlB64ToUint8Array(applicationServerPublicKey);
-	swRegistration.pushManager.subscribe({
-		userVisibleOnly: true,
-		applicationServerKey
-	})
-			.then(subscription => {
-				console.log('User is subscribed.');
+	swRegistration.pushManager
+		.subscribe({
+			userVisibleOnly: true,
+			applicationServerKey
+		})
+		.then(subscription => {
+			console.log('User is subscribed.');
 
-				// Send subscription to server
-				socket.emit('subscription', JSON.stringify(subscription));
-			})
-			.catch(err => {
-				console.log('Failed to subscribe the user: ', err);
-			});
+			// Send subscription to server
+			socket.emit('subscription', JSON.stringify(subscription));
+		})
+		.catch(err => {
+			console.log('Failed to subscribe the user: ', err);
+		});
 }
 
-export {setupPeers, massSend, singleSend, socketId, requestPeer};
+export { setupPeers, massSend, singleSend, socketId, requestPeer, backupSend };
