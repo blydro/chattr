@@ -75,8 +75,7 @@ function setupPeers(callbacks, logger) {
 		});
 
 		socket.on('socketmessage', msg => {
-			const message = JSON.parse(msg);
-			callbacks.dataCallback(message);
+			callbacks.dataCallback(msg, true);
 		});
 
 		peer.on('signal', data => {

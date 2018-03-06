@@ -19,8 +19,12 @@ class App extends Component {
 	constructor() {
 		super();
 
-		const dataCallback = data => {
-			let decoded = new TextDecoder('utf-8').decode(data);
+		const dataCallback = (data, json) => {
+			if (json) {
+				let decoded = data;
+			} else {
+				let decoded = new TextDecoder('utf-8').decode(data);
+			}
 			decoded = JSON.parse(decoded);
 			this.handleIncoming(decoded);
 		};
