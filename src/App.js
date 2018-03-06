@@ -73,13 +73,14 @@ class App extends Component {
 		};
 
 		const disconnectCallback = peerId => {
+			/*
 			this.logger(this.findName(peerId) + ' disconnected');
 
 			const names = this.state.names;
 			delete names[peerId];
 			this.setState({
 				names
-			});
+			});*/
 		};
 
 		setupPeers(
@@ -139,6 +140,7 @@ class App extends Component {
 			}
 			case 'names': {
 				const names = { ...this.state.names, ...message.newNames };
+				massSend({ type: 'names', newNames: this.state.names });
 				this.setState({ names });
 				break;
 			}
