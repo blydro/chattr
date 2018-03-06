@@ -20,10 +20,11 @@ class App extends Component {
 		super();
 
 		const dataCallback = (data, json) => {
-			if (json) {
-				let decoded = data;
+			let decoded = undefined;
+			if (json === true) {
+				decoded = data;
 			} else {
-				let decoded = new TextDecoder('utf-8').decode(data);
+				decoded = new TextDecoder('utf-8').decode(data);
 			}
 			decoded = JSON.parse(decoded);
 			this.handleIncoming(decoded);
