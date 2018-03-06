@@ -140,8 +140,10 @@ class App extends Component {
 			}
 			case 'names': {
 				const names = { ...this.state.names, ...message.newNames };
-				massSend({ type: 'names', newNames: this.state.names });
-				this.setState({ names });
+				if (!this.state.gotTheNames) {
+					massSend({ type: 'names', newNames: this.state.names });
+				}
+				this.setState({ names, gotTheNames: true });
 				break;
 			}
 			case 'logArchive': {
